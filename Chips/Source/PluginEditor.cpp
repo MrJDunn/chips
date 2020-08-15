@@ -18,6 +18,14 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (400, 300);
+
+	addAndMakeVisible(sVolume);
+	sVolume.setSliderStyle(Slider::SliderStyle::LinearBar);
+	sVolume.onValueChange = [this] 
+	{
+		processor.setAmplitude(sVolume.getValue());
+	};
+	sVolume.setRange({ 0, 100 }, 1);
 }
 
 ChipsAudioProcessorEditor::~ChipsAudioProcessorEditor()
@@ -39,4 +47,7 @@ void ChipsAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
+
+	auto area = getLocalBounds();
+	sVolume.setBounds(area.removeFromTop(50));
 }

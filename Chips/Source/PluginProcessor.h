@@ -55,10 +55,40 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+	//==============================================================================
+	// Amplitude
+	void setAmplitude(int);
+
 private:
 
+	struct NoteTracker
+	{
+	public:
+		NoteTracker()
+		{
+			for (int i = 0; i < 127; i++)
+			{
+				activeNotes[i] = false;
+			}
+		}
+		bool& operator[](int8 note)
+		{
+			return activeNotes[note];
+		}
+		void add(int8 note)
+		{
+			activeNotes[note] = true;
+		}
+		void remove(int8 note)
+		{
+			activeNotes[note] = false;
+		}
+	private:
+		bool activeNotes[128];
+	} noteTracker;
 	//==============================================================================
 	Random random;
+	float amplitude;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChipsAudioProcessor)

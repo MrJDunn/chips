@@ -24,6 +24,7 @@ ChipsAudioProcessor::ChipsAudioProcessor()
                        )
 #endif
 {
+	amplitude = 1.0f;
 }
 
 ChipsAudioProcessor::~ChipsAudioProcessor()
@@ -156,23 +157,44 @@ void ChipsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
     // the samples and the outer loop is handling the channels.
     // Alternatively, you can process the samples with the channels
     // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        auto* channelData = buffer.getWritePointer (channel);
 
-		for (auto sample = 0; sample < buffer.getNumSamples(); ++sample)
-			channelData[sample] = random.nextFloat() * 2.0f - 1.0f;
-        // ..do something to the data...
-    }
 
 	int t;
 	MidiMessage m;
 	for (auto it = MidiBuffer::Iterator(midiMessages); it.getNextEvent(m, t);)
 	{
+		if (m.isNoteOn())
+		{
+			noteTracker.add(m.getNoteNumber());
+		}
+		if (m.isNoteOff())
+		{
+			noteTracker.remove(m.getNoteNumber());
+		}
 		// play a sound for each note held!
 		// https://docs.juce.com/master/tutorial_mpe_introduction.html
 		// https://docs.juce.com/master/tutorial_synth_using_midi_input.html
 	}
+
+	for (int i = 0; i < 127; i++)
+	{
+		if (noteTracker[i])
+		{
+			// play our sound
+			for (int channel = 0; channel < totalNumInputChannels; ++channel)
+			{
+				auto* channelData = buffer.getWritePointer(channel);
+
+				for (auto sample = 0; sample < buffer.getNumSamples(); ++sample)
+				{
+					channelData[sample] = (random.nextFloat() * 2.0f - 1.0f) * amplitude;
+				}
+				// ..do something to the data...
+			}
+		}
+	}
+
+
 }
 
 //==============================================================================
@@ -198,6 +220,11 @@ void ChipsAudioProcessor::setStateInformation (const void* data, int sizeInBytes
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+}
+
+void ChipsAudioProcessor::setAmplitude(int value)
+{
+	amplitude = value / 100.0f;
 }
 
 //==============================================================================

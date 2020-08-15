@@ -31,5 +31,7 @@ private:
     // access the processor object that created it.
     ChipsAudioProcessor& processor;
 
+	Slider sVolume;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChipsAudioProcessorEditor)
 };
