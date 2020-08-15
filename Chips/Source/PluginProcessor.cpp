@@ -97,6 +97,12 @@ void ChipsAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+
+	String message;
+	message << "prepareToPlay()\n";
+	message << "      sampleRate: " << sampleRate << "\n";
+	message << " samplesPerBlock: " << samplesPerBlock << "\n";
+	Logger::getCurrentLogger()->writeToLog(message);
 }
 
 void ChipsAudioProcessor::releaseResources()
@@ -154,6 +160,8 @@ void ChipsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
     {
         auto* channelData = buffer.getWritePointer (channel);
 
+		for (auto sample = 0; sample < buffer.getNumSamples(); ++sample)
+			channelData[sample] = random.nextFloat() * 2.0f - 1.0f;
         // ..do something to the data...
     }
 
