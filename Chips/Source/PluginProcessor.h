@@ -59,36 +59,59 @@ public:
 	// Amplitude
 	void setAmplitude(int);
 
+	void setAttack(int);
+	void setDecay(int);
+	void setSustain(int);
+	void setRelease(int);
+
 private:
+
+	struct Envelope
+	{
+		float attack = 0.0f;	// the duration taken to achieve the volume
+		float decay = 0.0f;		// time taken to fallof after sustain period
+		float sustain = 0.0f;	// the duration of the sustain
+		float release = 0.0f;	// the duration taken to reach 0 after release
+	} envelope;
+
+	float amplitude;
+
+	struct Note
+	{
+		int time = 0;
+		float magnitude = 0.0f;
+		enum NoteState
+		{
+			Off = 0,
+			A,
+			S,
+			D,
+			R
+		} state = NoteState::Off;
+	};
 
 	struct NoteTracker
 	{
 	public:
-		NoteTracker()
-		{
-			for (int i = 0; i < 127; i++)
-			{
-				activeNotes[i] = false;
-			}
-		}
-		bool& operator[](int8 note)
+		Note& operator[](int8 note)
 		{
 			return activeNotes[note];
 		}
 		void add(int8 note)
 		{
-			activeNotes[note] = true;
+			activeNotes[note].state = Note::A;
 		}
 		void remove(int8 note)
 		{
-			activeNotes[note] = false;
+			activeNotes[note].state = Note::R;
 		}
 	private:
-		bool activeNotes[128];
+		Note activeNotes[128];
 	} noteTracker;
 	//==============================================================================
 	Random random;
-	float amplitude;
+
+
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChipsAudioProcessor)

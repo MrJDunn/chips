@@ -178,19 +178,124 @@ void ChipsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
 
 	for (int i = 0; i < 127; i++)
 	{
-		if (noteTracker[i])
+		switch (noteTracker[i].state)
 		{
-			// play our sound
+		case Note::Off: break;
+		case Note::A: 
+		{
+			// approach volume
+			if (noteTracker[i].magnitude < amplitude)
+			{
+				noteTracker[i].time++;
+				noteTracker[i].magnitude += envelope.attack; // reverse
+
+				for (int channel = 0; channel < totalNumInputChannels; ++channel)
+				{
+					auto* channelData = buffer.getWritePointer(channel);
+
+					for (auto sample = 0; sample < buffer.getNumSamples(); ++sample)
+					{
+						channelData[sample] = (random.nextFloat() * 2.0f - 1.0f) * noteTracker[i].magnitude;
+					}
+				}
+			}
+			else
+			{
+				noteTracker[i].state = Note::D;
+
+				for (int channel = 0; channel < totalNumInputChannels; ++channel)
+				{
+					auto* channelData = buffer.getWritePointer(channel);
+
+					for (auto sample = 0; sample < buffer.getNumSamples(); ++sample)
+					{
+						channelData[sample] = (random.nextFloat() * 2.0f - 1.0f) * amplitude;
+					}
+				}
+			}
+			break; 
+		};
+		case Note::D: 
+		{
+			if (noteTracker[i].magnitude > envelope.sustain)
+			{
+				noteTracker[i].time++;
+				noteTracker[i].magnitude -= envelope.decay; // reverse
+
+				for (int channel = 0; channel < totalNumInputChannels; ++channel)
+				{
+					auto* channelData = buffer.getWritePointer(channel);
+
+					for (auto sample = 0; sample < buffer.getNumSamples(); ++sample)
+					{
+						channelData[sample] = (random.nextFloat() * 2.0f - 1.0f) * noteTracker[i].magnitude;
+					}
+				}
+			}
+			else
+			{
+				noteTracker[i].state = Note::S;
+
+				for (int channel = 0; channel < totalNumInputChannels; ++channel)
+				{
+					auto* channelData = buffer.getWritePointer(channel);
+
+					for (auto sample = 0; sample < buffer.getNumSamples(); ++sample)
+					{
+						channelData[sample] = (random.nextFloat() * 2.0f - 1.0f) * envelope.sustain;
+					}
+				}
+			}
+			break; 
+		};
+		case Note::S: 
+		{
+			noteTracker[i].time++;
+
 			for (int channel = 0; channel < totalNumInputChannels; ++channel)
 			{
 				auto* channelData = buffer.getWritePointer(channel);
 
 				for (auto sample = 0; sample < buffer.getNumSamples(); ++sample)
 				{
-					channelData[sample] = (random.nextFloat() * 2.0f - 1.0f) * amplitude;
+					channelData[sample] = (random.nextFloat() * 2.0f - 1.0f) * envelope.sustain;
 				}
-				// ..do something to the data...
 			}
+			break; 
+		};
+		case Note::R: 
+		{
+			if (noteTracker[i].magnitude > 0.0f)
+			{
+				noteTracker[i].time++;
+				noteTracker[i].magnitude -= envelope.release; // reverse
+
+				for (int channel = 0; channel < totalNumInputChannels; ++channel)
+				{
+					auto* channelData = buffer.getWritePointer(channel);
+
+					for (auto sample = 0; sample < buffer.getNumSamples(); ++sample)
+					{
+						channelData[sample] = (random.nextFloat() * 2.0f - 1.0f) * noteTracker[i].magnitude;
+					}
+				}
+			}
+			else
+			{
+				noteTracker[i].state = Note::Off;
+
+				for (int channel = 0; channel < totalNumInputChannels; ++channel)
+				{
+					auto* channelData = buffer.getWritePointer(channel);
+
+					for (auto sample = 0; sample < buffer.getNumSamples(); ++sample)
+					{
+						channelData[sample] = (random.nextFloat() * 2.0f - 1.0f) * 0.0f;
+					}
+				}
+			}
+			break; 
+		};
 		}
 	}
 
@@ -225,6 +330,26 @@ void ChipsAudioProcessor::setStateInformation (const void* data, int sizeInBytes
 void ChipsAudioProcessor::setAmplitude(int value)
 {
 	amplitude = value / 100.0f;
+}
+
+void ChipsAudioProcessor::setAttack(int value)
+{
+	envelope.attack = 1.0f - value / 100.0f;
+}
+
+void ChipsAudioProcessor::setDecay(int value)
+{
+	envelope.decay = 1.0f - value / 100.0f;
+}
+
+void ChipsAudioProcessor::setSustain(int value)
+{
+	envelope.sustain = value / 100.0f;
+}
+
+void ChipsAudioProcessor::setRelease(int value)
+{
+	envelope.release = 1.0f - value / 100.0f;
 }
 
 //==============================================================================
