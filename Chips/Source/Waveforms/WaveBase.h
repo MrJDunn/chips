@@ -19,6 +19,8 @@ public:
 	WaveBase();
 	virtual ~WaveBase();
 	void perform(Note& note, AudioBuffer<float>& buffer, int channel);
+	void setSampleRate(double newSampleRate);
 protected:
 	virtual void fillBuffer(const Note&, float* writePointer) = 0;
+	double sampleRate = 0.0;
 };

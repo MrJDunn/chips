@@ -21,7 +21,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 
 	// Waveform
 	addAndMakeVisible(cWaveform);
-	cWaveform.addItemList(StringArray{"Noise","Sine"}, 1);
+	cWaveform.addItemList(StringArray{"Noise","Atonal Beep","Sine"}, 1);
 	cWaveform.onChange = [this]
 	{
 		processor.setWaveform(cWaveform.getSelectedId());
@@ -91,6 +91,8 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	addAndMakeVisible(lRelease);
 	lRelease.attachToComponent(&sRelease, true);
 	lRelease.setText(String(TextValues::RELEASE), dontSendNotification);
+
+	initialiseParameters();
 }
 
 ChipsAudioProcessorEditor::~ChipsAudioProcessorEditor()
@@ -136,4 +138,15 @@ void ChipsAudioProcessorEditor::resized()
 	auto releaseArea = area.removeFromTop(SizeValues::SLIDER_HEIGHT);
 	lRelease.setBounds(releaseArea.removeFromLeft(SizeValues::LABEL_WIDTH));
 	sRelease.setBounds(releaseArea);
+}
+
+void ChipsAudioProcessorEditor::initialiseParameters()
+{
+	cWaveform.setSelectedId(1);
+	sVolume.setValue(50.0);
+	sAttack.setValue(50.0);
+	sDecay.setValue(50.0);
+	sSustain.setValue(50.0);
+	sRelease.setValue(50.0);
+	sAttack.setValue(50.0);
 }

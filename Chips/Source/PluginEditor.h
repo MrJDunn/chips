@@ -27,6 +27,7 @@ public:
     void resized() override;
 
 private:
+
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     ChipsAudioProcessor& processor;
@@ -60,6 +61,9 @@ private:
 		static constexpr int LABEL_WIDTH = 100;
 		static constexpr int SLIDER_HEIGHT = 25;
 	};
+
+	void initialiseParameters();
+
 	
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChipsAudioProcessorEditor)
 };

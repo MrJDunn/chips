@@ -39,3 +39,8 @@ void WaveBase::perform(Note& note, AudioBuffer<float>& buffer, int channel)
 		note.time++;
 	}
 }
+
+void WaveBase::setSampleRate(double newSampleRate)
+{
+	sampleRate = newSampleRate;
+}

@@ -179,13 +179,14 @@ void ChipsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
 
 	if (wave)
 	{
+		wave->setSampleRate(getSampleRate());
 		for (int i = 0; i < 127; i++)
 		{
 			calculateMagintude(&noteTracker[i]);
 
 			if (noteTracker[i].state != Note::Off)
 			{
-				for (int channel = 0; channel < totalNumInputChannels; ++channel)
+				for (int channel = 0; channel < totalNumOutputChannels; ++channel)
 				{
 					wave->perform(noteTracker[i], buffer, channel);
 				}
@@ -235,6 +236,12 @@ void ChipsAudioProcessor::setWaveform(int newWaveform)
 		wave = new AtonalBeep();
 		break;
 	}
+	case 3:
+	{
+		delete wave;
+		wave = new Sine();
+		break;
+	}
 	default:
 	{
 		// invalid waveform
@@ -251,12 +258,12 @@ void ChipsAudioProcessor::setAmplitude(int value)
 
 void ChipsAudioProcessor::setAttack(int value)
 {
-	envelope.attack = 1.0f - value / 1000.0f;
+	envelope.attack = value / 500.0f;
 }
 
 void ChipsAudioProcessor::setDecay(int value)
 {
-	envelope.decay = 1.0f - value / 1000.0f;
+	envelope.decay = value / 500.0f;
 }
 
 void ChipsAudioProcessor::setSustain(int value)
@@ -266,7 +273,7 @@ void ChipsAudioProcessor::setSustain(int value)
 
 void ChipsAudioProcessor::setRelease(int value)
 {
-	envelope.release = 1.0f - value / 100.0f;
+	envelope.release = value / 500.0f;
 }
 
 void ChipsAudioProcessor::calculateMagintude(Note* note)
