@@ -3,6 +3,18 @@
 <JUCERPROJECT id="cFxdiW" name="Chips" projectType="audioplug" jucerVersion="5.4.3">
   <MAINGROUP id="ffMzSM" name="Chips">
     <GROUP id="{0D49C7E3-B330-A4B4-D6C1-F5862CD3E2B0}" name="Source">
+      <GROUP id="{F3A763E4-8E8A-CB5A-C1C1-D9DFCA1586A7}" name="Models">
+        <FILE id="mCk1WJ" name="Note.cpp" compile="1" resource="0" file="Source/Models/Note.cpp"/>
+        <FILE id="qq1VQA" name="Note.h" compile="0" resource="0" file="Source/Models/Note.h"/>
+      </GROUP>
+      <GROUP id="{4E28D5D0-41AE-1FD3-2DBE-0EB6E34F5144}" name="Waveforms">
+        <FILE id="V5hyim" name="AtonalBeep.cpp" compile="1" resource="0" file="Source/Waveforms/AtonalBeep.cpp"/>
+        <FILE id="xzaVIn" name="AtonalBeep.h" compile="0" resource="0" file="Source/Waveforms/AtonalBeep.h"/>
+        <FILE id="xpIMVg" name="Noise.cpp" compile="1" resource="0" file="Source/Waveforms/Noise.cpp"/>
+        <FILE id="ioJLya" name="Noise.h" compile="0" resource="0" file="Source/Waveforms/Noise.h"/>
+        <FILE id="LGuxqA" name="WaveBase.cpp" compile="1" resource="0" file="Source/Waveforms/WaveBase.cpp"/>
+        <FILE id="cudBXO" name="WaveBase.h" compile="0" resource="0" file="Source/Waveforms/WaveBase.h"/>
+      </GROUP>
       <FILE id="MkM95R" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="hB6L24" name="PluginProcessor.h" compile="0" resource="0"

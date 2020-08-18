@@ -12,6 +12,11 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include <queue>
+#include "Models/Note.h"
+
+#include "Waveforms/WaveBase.h"
+#include "Waveforms/Noise.h"
+#include "Waveforms/AtonalBeep.h"
 
 //==============================================================================
 /**
@@ -68,11 +73,7 @@ public:
 
 private:
 
-	enum Waveform 
-	{
-		Noise = 1,
-		AtonalBeep
-	} waveform = Waveform::Noise;
+	WaveBase* wave;
 
 	struct Envelope
 	{
@@ -83,21 +84,7 @@ private:
 		float release = 0.0f;	// the duration taken to reach 0 after release
 	} envelope;
 
-	struct Note
-	{
-		float magnitude = 0.0f;
-		int time = 0;
-
-		enum NoteState
-		{
-			Off = 0,
-			A,
-			S,
-			D,
-			R
-		} state = NoteState::Off;
-	};
-
+	//==============================================================================
 	void calculateMagintude(Note*);
 
 	struct NoteTracker
@@ -109,8 +96,8 @@ private:
 		}
 		void add(int8 note)
 		{
-			order.push(note);
 			notes[note].state = Note::A;
+			notes[note].midiValue = note;
 		}
 		void remove(int8 note)
 		{
@@ -118,12 +105,7 @@ private:
 		}
 	private:
 		Note notes[128];
-		std::queue<int> order;
 	} noteTracker;
-	//==============================================================================
-	Random random;
-
-
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChipsAudioProcessor)

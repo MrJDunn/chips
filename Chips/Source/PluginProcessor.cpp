@@ -24,11 +24,12 @@ ChipsAudioProcessor::ChipsAudioProcessor()
                        )
 #endif
 {
-
+	wave = nullptr;
 }
 
 ChipsAudioProcessor::~ChipsAudioProcessor()
 {
+	delete wave;
 }
 
 //==============================================================================
@@ -176,55 +177,21 @@ void ChipsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
 		// https://docs.juce.com/master/tutorial_synth_using_midi_input.html
 	}
 
-	for (int i = 0; i < 127; i++)
+	if (wave)
 	{
-		calculateMagintude(&noteTracker[i]);
-
-		if (noteTracker[i].state != Note::Off)
+		for (int i = 0; i < 127; i++)
 		{
-			for (int channel = 0; channel < totalNumInputChannels; ++channel)
-			{
-				auto* channelData = buffer.getWritePointer(channel);
-				
-				for (auto sample = 0; sample < buffer.getNumSamples(); ++sample)
-				{
-					switch (waveform)
-					{
-					case Waveform::Noise: 
-					{
-						channelData[sample] = channelData[sample] + (random.nextFloat() * 2.0f - 1.0f) * noteTracker[i].magnitude;
-						break; 
-					}
-					case Waveform::AtonalBeep:
-					{
-						channelData[sample] = channelData[sample] + (std::sin(noteTracker[i].time*3.14*i)) * noteTracker[i].magnitude;
-						noteTracker[i].time++;
-						break;
-					}
-					default:
-					{
-						// invalid waveform
-						jassertfalse;
-						channelData[sample] = channelData[sample] + (random.nextFloat() * 2.0f - 1.0f) * noteTracker[i].magnitude;
-						break;
-					}
-					}
+			calculateMagintude(&noteTracker[i]);
 
-					// clip
-					if (channelData[sample] < 0.0f)
-					{
-						channelData[sample] = 0.0f;
-					}
-					if (channelData[sample] > 1.0f)
-					{
-						channelData[sample] = 1.0f;
-					}
+			if (noteTracker[i].state != Note::Off)
+			{
+				for (int channel = 0; channel < totalNumInputChannels; ++channel)
+				{
+					wave->perform(noteTracker[i], buffer, channel);
 				}
 			}
 		}
 	}
-
-
 }
 
 //==============================================================================
@@ -254,7 +221,27 @@ void ChipsAudioProcessor::setStateInformation (const void* data, int sizeInBytes
 
 void ChipsAudioProcessor::setWaveform(int newWaveform)
 {
-	waveform = Waveform(newWaveform);
+	switch (newWaveform)
+	{
+	case 1:
+	{
+		delete wave;
+		wave = new Noise();
+		break;
+	}
+	case 2:
+	{
+		delete wave;
+		wave = new AtonalBeep();
+		break;
+	}
+	default:
+	{
+		// invalid waveform
+		jassertfalse;
+		break;
+	}
+	}
 }
 
 void ChipsAudioProcessor::setAmplitude(int value)
