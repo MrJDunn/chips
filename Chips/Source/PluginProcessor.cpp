@@ -24,7 +24,7 @@ ChipsAudioProcessor::ChipsAudioProcessor()
                        )
 #endif
 {
-	amplitude = 1.0f;
+
 }
 
 ChipsAudioProcessor::~ChipsAudioProcessor()
@@ -178,124 +178,27 @@ void ChipsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
 
 	for (int i = 0; i < 127; i++)
 	{
-		switch (noteTracker[i].state)
+		calculateMagintude(&noteTracker[i]);
+
+		if (noteTracker[i].state != Note::Off)
 		{
-		case Note::Off: break;
-		case Note::A: 
-		{
-			// approach volume
-			if (noteTracker[i].magnitude < amplitude)
-			{
-				noteTracker[i].time++;
-				noteTracker[i].magnitude += envelope.attack; // reverse
-
-				for (int channel = 0; channel < totalNumInputChannels; ++channel)
-				{
-					auto* channelData = buffer.getWritePointer(channel);
-
-					for (auto sample = 0; sample < buffer.getNumSamples(); ++sample)
-					{
-						channelData[sample] = (random.nextFloat() * 2.0f - 1.0f) * noteTracker[i].magnitude;
-					}
-				}
-			}
-			else
-			{
-				noteTracker[i].state = Note::D;
-
-				for (int channel = 0; channel < totalNumInputChannels; ++channel)
-				{
-					auto* channelData = buffer.getWritePointer(channel);
-
-					for (auto sample = 0; sample < buffer.getNumSamples(); ++sample)
-					{
-						channelData[sample] = (random.nextFloat() * 2.0f - 1.0f) * amplitude;
-					}
-				}
-			}
-			break; 
-		};
-		case Note::D: 
-		{
-			if (noteTracker[i].magnitude > envelope.sustain)
-			{
-				noteTracker[i].time++;
-				noteTracker[i].magnitude -= envelope.decay; // reverse
-
-				for (int channel = 0; channel < totalNumInputChannels; ++channel)
-				{
-					auto* channelData = buffer.getWritePointer(channel);
-
-					for (auto sample = 0; sample < buffer.getNumSamples(); ++sample)
-					{
-						channelData[sample] = (random.nextFloat() * 2.0f - 1.0f) * noteTracker[i].magnitude;
-					}
-				}
-			}
-			else
-			{
-				noteTracker[i].state = Note::S;
-
-				for (int channel = 0; channel < totalNumInputChannels; ++channel)
-				{
-					auto* channelData = buffer.getWritePointer(channel);
-
-					for (auto sample = 0; sample < buffer.getNumSamples(); ++sample)
-					{
-						channelData[sample] = (random.nextFloat() * 2.0f - 1.0f) * envelope.sustain;
-					}
-				}
-			}
-			break; 
-		};
-		case Note::S: 
-		{
-			noteTracker[i].time++;
-
 			for (int channel = 0; channel < totalNumInputChannels; ++channel)
 			{
 				auto* channelData = buffer.getWritePointer(channel);
-
+				
 				for (auto sample = 0; sample < buffer.getNumSamples(); ++sample)
 				{
-					channelData[sample] = (random.nextFloat() * 2.0f - 1.0f) * envelope.sustain;
-				}
-			}
-			break; 
-		};
-		case Note::R: 
-		{
-			if (noteTracker[i].magnitude > 0.0f)
-			{
-				noteTracker[i].time++;
-				noteTracker[i].magnitude -= envelope.release; // reverse
-
-				for (int channel = 0; channel < totalNumInputChannels; ++channel)
-				{
-					auto* channelData = buffer.getWritePointer(channel);
-
-					for (auto sample = 0; sample < buffer.getNumSamples(); ++sample)
+					channelData[sample] = channelData[sample] + (random.nextFloat() * 2.0f - 1.0f) * noteTracker[i].magnitude;
+					if (channelData[sample] < 0.0f)
 					{
-						channelData[sample] = (random.nextFloat() * 2.0f - 1.0f) * noteTracker[i].magnitude;
+						channelData[sample] = 0.0f;
+					}
+					if (channelData[sample] > 1.0f)
+					{
+						channelData[sample] = 1.0f;
 					}
 				}
 			}
-			else
-			{
-				noteTracker[i].state = Note::Off;
-
-				for (int channel = 0; channel < totalNumInputChannels; ++channel)
-				{
-					auto* channelData = buffer.getWritePointer(channel);
-
-					for (auto sample = 0; sample < buffer.getNumSamples(); ++sample)
-					{
-						channelData[sample] = (random.nextFloat() * 2.0f - 1.0f) * 0.0f;
-					}
-				}
-			}
-			break; 
-		};
 		}
 	}
 
@@ -329,17 +232,17 @@ void ChipsAudioProcessor::setStateInformation (const void* data, int sizeInBytes
 
 void ChipsAudioProcessor::setAmplitude(int value)
 {
-	amplitude = value / 100.0f;
+	envelope.amplitude = value / 100.0f;
 }
 
 void ChipsAudioProcessor::setAttack(int value)
 {
-	envelope.attack = 1.0f - value / 100.0f;
+	envelope.attack = 1.0f - value / 1000.0f;
 }
 
 void ChipsAudioProcessor::setDecay(int value)
 {
-	envelope.decay = 1.0f - value / 100.0f;
+	envelope.decay = 1.0f - value / 1000.0f;
 }
 
 void ChipsAudioProcessor::setSustain(int value)
@@ -350,6 +253,54 @@ void ChipsAudioProcessor::setSustain(int value)
 void ChipsAudioProcessor::setRelease(int value)
 {
 	envelope.release = 1.0f - value / 100.0f;
+}
+
+void ChipsAudioProcessor::calculateMagintude(Note* note)
+{
+	switch (note->state)
+	{
+	case Note::Off: break;
+	case Note::A:
+	{
+		if (note->magnitude < envelope.amplitude)
+		{
+			note->magnitude += envelope.attack;
+		}
+		else
+		{
+			note->magnitude = envelope.amplitude;
+			note->state = Note::D;
+		}
+		break;
+	};
+	case Note::D:
+	{
+		if (note->magnitude > envelope.sustain)
+		{
+			note->magnitude -= envelope.decay;
+		}
+		else
+		{
+			note->magnitude = envelope.sustain;
+			note->state = Note::S;
+		}
+		break;
+	};
+	case Note::S: break;
+	case Note::R:
+	{
+		if (note->magnitude > 0.0f)
+		{
+			note->magnitude -= envelope.release;
+		}
+		else
+		{
+			note->magnitude = 0.0f;
+			note->state = Note::Off;
+		}
+		break;
+	};
+	}
 }
 
 //==============================================================================

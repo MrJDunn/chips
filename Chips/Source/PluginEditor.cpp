@@ -83,7 +83,6 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	addAndMakeVisible(lRelease);
 	lRelease.attachToComponent(&sRelease, true);
 	lRelease.setText(String(TextValues::RELEASE), dontSendNotification);
-
 }
 
 ChipsAudioProcessorEditor::~ChipsAudioProcessorEditor()

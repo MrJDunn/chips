@@ -11,6 +11,7 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include <queue>
 
 //==============================================================================
 /**
@@ -68,17 +69,15 @@ private:
 
 	struct Envelope
 	{
+		float amplitude = 0.0f;
 		float attack = 0.0f;	// the duration taken to achieve the volume
 		float decay = 0.0f;		// time taken to fallof after sustain period
 		float sustain = 0.0f;	// the duration of the sustain
 		float release = 0.0f;	// the duration taken to reach 0 after release
 	} envelope;
 
-	float amplitude;
-
 	struct Note
 	{
-		int time = 0;
 		float magnitude = 0.0f;
 		enum NoteState
 		{
@@ -90,23 +89,27 @@ private:
 		} state = NoteState::Off;
 	};
 
+	void calculateMagintude(Note*);
+
 	struct NoteTracker
 	{
 	public:
 		Note& operator[](int8 note)
 		{
-			return activeNotes[note];
+			return notes[note];
 		}
 		void add(int8 note)
 		{
-			activeNotes[note].state = Note::A;
+			order.push(note);
+			notes[note].state = Note::A;
 		}
 		void remove(int8 note)
 		{
-			activeNotes[note].state = Note::R;
+			notes[note].state = Note::R;
 		}
 	private:
-		Note activeNotes[128];
+		Note notes[128];
+		std::queue<int> order;
 	} noteTracker;
 	//==============================================================================
 	Random random;
