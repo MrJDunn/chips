@@ -188,7 +188,29 @@ void ChipsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
 				
 				for (auto sample = 0; sample < buffer.getNumSamples(); ++sample)
 				{
-					channelData[sample] = channelData[sample] + (random.nextFloat() * 2.0f - 1.0f) * noteTracker[i].magnitude;
+					switch (waveform)
+					{
+					case Waveform::Noise: 
+					{
+						channelData[sample] = channelData[sample] + (random.nextFloat() * 2.0f - 1.0f) * noteTracker[i].magnitude;
+						break; 
+					}
+					case Waveform::AtonalBeep:
+					{
+						channelData[sample] = channelData[sample] + (std::sin(noteTracker[i].time*3.14*i)) * noteTracker[i].magnitude;
+						noteTracker[i].time++;
+						break;
+					}
+					default:
+					{
+						// invalid waveform
+						jassertfalse;
+						channelData[sample] = channelData[sample] + (random.nextFloat() * 2.0f - 1.0f) * noteTracker[i].magnitude;
+						break;
+					}
+					}
+
+					// clip
 					if (channelData[sample] < 0.0f)
 					{
 						channelData[sample] = 0.0f;
@@ -228,6 +250,11 @@ void ChipsAudioProcessor::setStateInformation (const void* data, int sizeInBytes
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+}
+
+void ChipsAudioProcessor::setWaveform(int newWaveform)
+{
+	waveform = Waveform(newWaveform);
 }
 
 void ChipsAudioProcessor::setAmplitude(int value)

@@ -19,6 +19,14 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
     // editor's size to whatever you need it to be.
     setSize (400, 300);
 
+	// Waveform
+	addAndMakeVisible(cWaveform);
+	cWaveform.addItemList(StringArray{"Noise","Sine"}, 1);
+	cWaveform.onChange = [this]
+	{
+		processor.setWaveform(cWaveform.getSelectedId());
+	};
+
 	// Volume
 	addAndMakeVisible(sVolume);
 	sVolume.setSliderStyle(Slider::SliderStyle::LinearBar);
@@ -106,6 +114,8 @@ void ChipsAudioProcessorEditor::resized()
     // subcomponents in your editor..
 
 	auto area = getLocalBounds();
+
+	cWaveform.setBounds(area.removeFromTop(SizeValues::SLIDER_HEIGHT));
 
 	auto volumeArea = area.removeFromTop(SizeValues::SLIDER_HEIGHT);
 	lVolume.setBounds(volumeArea.removeFromLeft(SizeValues::LABEL_WIDTH));

@@ -44,6 +44,8 @@ private:
 	Label lSustain;
 	Label lRelease;
 
+	ComboBox cWaveform;
+
 	struct TextValues
 	{
 		static constexpr char* VOLUME = "Volume";

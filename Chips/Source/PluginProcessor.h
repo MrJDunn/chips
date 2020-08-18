@@ -57,7 +57,8 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 	//==============================================================================
-	// Amplitude
+	// Params
+	void setWaveform(int);
 	void setAmplitude(int);
 
 	void setAttack(int);
@@ -66,6 +67,12 @@ public:
 	void setRelease(int);
 
 private:
+
+	enum Waveform 
+	{
+		Noise = 1,
+		AtonalBeep
+	} waveform = Waveform::Noise;
 
 	struct Envelope
 	{
@@ -79,6 +86,8 @@ private:
 	struct Note
 	{
 		float magnitude = 0.0f;
+		int time = 0;
+
 		enum NoteState
 		{
 			Off = 0,
