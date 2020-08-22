@@ -19,7 +19,7 @@ Noise::~Noise()
 	delete random;
 }
 
-void Noise::fillBuffer(const Note& note, float *writePointer)
+void Noise::fillBuffer(Note& note, float *writePointer)
 {
-	*writePointer = *writePointer + (random->nextFloat() * 2.0f - 1.0f) * note.magnitude;
+	*writePointer = *writePointer + (random->nextFloat() * 2.0f - 1.0f) * note.amplitude;
 }

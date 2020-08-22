@@ -13,8 +13,11 @@
 struct Note
 {
 	int midiValue = 0;
-	float magnitude = 0.0f;
+	double amplitude = 0.005;
 	int time = 0;
+	double smoothingFactor = 0.1;
+	double angleDelta = 0.0;
+	double currentAngle = 0.0;
 
 	enum NoteState
 	{

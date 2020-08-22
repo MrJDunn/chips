@@ -4,6 +4,9 @@
               pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn">
   <MAINGROUP id="ffMzSM" name="Chips">
     <GROUP id="{0D49C7E3-B330-A4B4-D6C1-F5862CD3E2B0}" name="Source">
+      <GROUP id="{B187A54C-38A6-45E2-44F4-3339707A3AFF}" name="Utility">
+        <FILE id="nYhfzs" name="Converter.h" compile="0" resource="0" file="Source/Utility/Converter.h"/>
+      </GROUP>
       <GROUP id="{F3A763E4-8E8A-CB5A-C1C1-D9DFCA1586A7}" name="Models">
         <FILE id="mCk1WJ" name="Note.cpp" compile="1" resource="0" file="Source/Models/Note.cpp"/>
         <FILE id="qq1VQA" name="Note.h" compile="0" resource="0" file="Source/Models/Note.h"/>

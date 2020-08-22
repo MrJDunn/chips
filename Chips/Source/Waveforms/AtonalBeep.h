@@ -22,5 +22,5 @@ public:
 	AtonalBeep();
 	~AtonalBeep() override;
 protected:
-	void fillBuffer(const Note& note, float* writePointer) override;
+	void fillBuffer(Note& note, float* writePointer) override;
 };

@@ -18,7 +18,7 @@ AtonalBeep::~AtonalBeep()
 {
 }
 
-void AtonalBeep::fillBuffer(const Note& note, float* writePointer)
+void AtonalBeep::fillBuffer(Note& note, float* writePointer)
 {
-	*writePointer = *writePointer + (std::sin(note.time*3.14* note.midiValue)) * note.magnitude;
+	*writePointer = *writePointer + (std::sin(note.time*3.14* note.midiValue)) * note.amplitude;
 }

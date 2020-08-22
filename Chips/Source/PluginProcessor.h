@@ -97,8 +97,11 @@ private:
 		}
 		void add(int8 note)
 		{
-			notes[note].state = Note::A;
-			notes[note].midiValue = note;
+			Note newNote;
+			newNote.state = Note::A;
+			newNote.midiValue = note;
+
+			notes[note] = newNote;
 		}
 		void remove(int8 note)
 		{

@@ -18,29 +18,47 @@ WaveBase::~WaveBase()
 {
 }
 
-void WaveBase::perform(Note& note, AudioBuffer<float>& buffer, int channel)
+void WaveBase::perform(Note& note, AudioBuffer<float>& buffer)
 {
-	auto* writePointer = buffer.getWritePointer(channel);
+	bool s = true;
+	int numSamples = buffer.getNumSamples();
 
-	for (auto sample = 0; sample < buffer.getNumSamples(); ++sample)
+	for (auto sample = 0; sample < numSamples; sample++)
 	{
-		fillBuffer(note, &writePointer[sample]);
+		for (int channel = 0; channel < buffer.getNumChannels(); channel++)
+		{
+			float* ptr = buffer.getWritePointer(channel);
+			fillBuffer(note, &ptr[sample]);
 
-		// clip
-		if (writePointer[sample] < 0.0f)
-		{
-			writePointer[sample] = 0.0f;
-		}
-		if (writePointer[sample] > 1.0f)
-		{
-			writePointer[sample] = 1.0f;
+			clip(&ptr[sample]);
 		}
 
 		note.time++;
 	}
+
 }
 
 void WaveBase::setSampleRate(double newSampleRate)
 {
 	sampleRate = newSampleRate;
+}
+
+void WaveBase::reset(AudioBuffer<float>& buffer)
+{
+	for (int sample = 0; sample < buffer.getNumSamples(); sample++)
+	{
+		for (int channel = 0; channel < buffer.getNumChannels(); channel++)
+		{
+			float* ptr = buffer.getWritePointer(channel);
+			ptr[sample] = 0;
+		}
+	}
+}
+
+void WaveBase::clip(float* writePointer)
+{
+	if (*writePointer > 1.0f)
+		*writePointer = 1.0f;
+	if (*writePointer < -1.0f)
+		*writePointer = -1.0f;
 }

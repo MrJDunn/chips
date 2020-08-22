@@ -22,7 +22,7 @@ public:
 	Noise();
 	~Noise() override;
 protected:
-	void fillBuffer(const Note& note, float* writePointer) override;
+	void fillBuffer(Note& note, float* writePointer) override;
 private:
 	Random* random;
 };

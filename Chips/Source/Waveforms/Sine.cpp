@@ -18,15 +18,21 @@ Sine::~Sine()
 {
 }
 
-void Sine::updateAngleDelta(float hz)
+void Sine::updateAngleDelta(double hz)
 {
 	auto cyclesPerSample = hz / sampleRate;
 	angleDelta = cyclesPerSample * 2.0 * juce::MathConstants<double>::pi;
 }
 
-void Sine::fillBuffer(const Note& note, float *writePointer)
+void Sine::updateNoteAngleDelta(Note& note)
 {
-	updateAngleDelta(frequencies[note.midiValue % 12] * pow(2, floor(note.midiValue / 12.0f)));
-	*writePointer = *writePointer + (std::sin(currentAngle)) * note.magnitude;
-	currentAngle += angleDelta;
+	auto cyclesPerSample = Converter::midiNoteToFrequency(note.midiValue) / sampleRate;
+	note.angleDelta = cyclesPerSample * 2.0 * juce::MathConstants<double>::pi;
+}
+
+void Sine::fillBuffer(Note& note, float *writePointer)
+{
+	updateNoteAngleDelta(note);
+	*writePointer += sin(note.currentAngle) * (note.amplitude);
+	note.currentAngle += note.angleDelta;
 }

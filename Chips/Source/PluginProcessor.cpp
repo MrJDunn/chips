@@ -11,18 +11,12 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+
 //==============================================================================
-ChipsAudioProcessor::ChipsAudioProcessor()
-#ifndef JucePlugin_PreferredChannelConfigurations
-     : AudioProcessor (BusesProperties()
-                     #if ! JucePlugin_IsMidiEffect
-                      #if ! JucePlugin_IsSynth
-                       .withInput  ("Input",  AudioChannelSet::stereo(), true)
-                      #endif
-                       .withOutput ("Output", AudioChannelSet::stereo(), true)
-                     #endif
-                       )
-#endif
+ChipsAudioProcessor::ChipsAudioProcessor(): 
+	AudioProcessor(BusesProperties()
+		.withInput("Input", AudioChannelSet::stereo(), false)
+		.withOutput ("Output", AudioChannelSet::stereo(), true))
 {
 	wave = nullptr;
 }
@@ -159,6 +153,7 @@ void ChipsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
     // Alternatively, you can process the samples with the channels
     // interleaved by keeping the same state.
 
+	buffer.clear();
 
 	int t;
 	MidiMessage m;
@@ -186,10 +181,17 @@ void ChipsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
 
 			if (noteTracker[i].state != Note::Off)
 			{
-				for (int channel = 0; channel < totalNumOutputChannels; ++channel)
-				{
-					wave->perform(noteTracker[i], buffer, channel);
-				}
+				//wave->reset(buffer);
+				wave->perform(noteTracker[i], buffer);
+			}
+		}
+
+		for (auto sample = 0; sample < buffer.getNumSamples(); sample++)
+		{
+			for (int channel = 0; channel < buffer.getNumChannels(); channel++)
+			{
+				float* ptr = buffer.getWritePointer(channel);
+				//*ptr *= 0.05f;
 			}
 		}
 	}
@@ -283,26 +285,27 @@ void ChipsAudioProcessor::calculateMagintude(Note* note)
 	case Note::Off: break;
 	case Note::A:
 	{
-		if (note->magnitude < envelope.amplitude)
+		note->smoothingFactor *= 10.01;
+		if (note->amplitude < envelope.amplitude)
 		{
-			note->magnitude += envelope.attack;
+			note->amplitude *= note->smoothingFactor;
 		}
 		else
 		{
-			note->magnitude = envelope.amplitude;
+			note->amplitude = envelope.amplitude;
 			note->state = Note::D;
 		}
 		break;
 	};
 	case Note::D:
 	{
-		if (note->magnitude > envelope.sustain)
+		if (note->amplitude > envelope.sustain)
 		{
-			note->magnitude -= envelope.decay;
+			note->amplitude -= envelope.decay;
 		}
 		else
 		{
-			note->magnitude = envelope.sustain;
+			note->amplitude = envelope.sustain;
 			note->state = Note::S;
 		}
 		break;
@@ -310,13 +313,13 @@ void ChipsAudioProcessor::calculateMagintude(Note* note)
 	case Note::S: break;
 	case Note::R:
 	{
-		if (note->magnitude > 0.0f)
+		if (note->amplitude > 0.0f)
 		{
-			note->magnitude -= envelope.release;
+			note->amplitude -= envelope.release;
 		}
 		else
 		{
-			note->magnitude = 0.0f;
+			note->amplitude = 0.0f;
 			note->state = Note::Off;
 		}
 		break;
