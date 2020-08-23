@@ -185,15 +185,6 @@ void ChipsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
 				wave->perform(noteTracker[i], buffer);
 			}
 		}
-
-		for (auto sample = 0; sample < buffer.getNumSamples(); sample++)
-		{
-			for (int channel = 0; channel < buffer.getNumChannels(); channel++)
-			{
-				float* ptr = buffer.getWritePointer(channel);
-				//*ptr *= 0.05f;
-			}
-		}
 	}
 }
 
@@ -242,6 +233,12 @@ void ChipsAudioProcessor::setWaveform(int newWaveform)
 	{
 		delete wave;
 		wave = new Sine();
+		break;
+	}
+	case 4:
+	{
+		delete wave;
+		wave = new Square();
 		break;
 	}
 	default:
@@ -313,15 +310,27 @@ void ChipsAudioProcessor::calculateMagintude(Note* note)
 	case Note::S: break;
 	case Note::R:
 	{
-		if (note->amplitude > 0.0f)
+		note->smoothingFactor *= 0.01;
+
+		if (note->amplitude > 0.05f)
 		{
-			note->amplitude -= envelope.release;
+			note->amplitude *= note->smoothingFactor;
 		}
 		else
 		{
 			note->amplitude = 0.0f;
 			note->state = Note::Off;
 		}
+
+		//if (note->amplitude > 0.0f)
+		//{
+		//	note->amplitude -= envelope.release;
+		//}
+		//else
+		//{
+		//	note->amplitude = 0.0f;
+		//	note->state = Note::Off;
+		//}
 		break;
 	};
 	}

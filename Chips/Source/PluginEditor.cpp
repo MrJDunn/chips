@@ -21,7 +21,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 
 	// Waveform
 	addAndMakeVisible(cWaveform);
-	cWaveform.addItemList(StringArray{"Noise","Atonal Beep","Sine"}, 1);
+	cWaveform.addItemList(StringArray{"Noise","Atonal Beep","Sine","Square"}, 1);
 	cWaveform.onChange = [this]
 	{
 		processor.setWaveform(cWaveform.getSelectedId());

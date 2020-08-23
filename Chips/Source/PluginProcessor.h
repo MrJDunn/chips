@@ -18,6 +18,7 @@
 #include "Waveforms/Noise.h"
 #include "Waveforms/AtonalBeep.h"
 #include "Waveforms/Sine.h"
+#include "Waveforms/Square.h"
 
 //==============================================================================
 /**
