@@ -179,13 +179,14 @@ void ChipsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
 		{
 			calculateMagintude(&noteTracker[i]);
 
-			if (noteTracker[i].state != Note::Off)
+			if (noteTracker[i].state != Note::Off)// || i == 64)
 			{
 				//wave->reset(buffer);
 				wave->perform(noteTracker[i], buffer);
 			}
 		}
 	}
+	bufferHelper.saveBuffer(buffer);
 }
 
 //==============================================================================

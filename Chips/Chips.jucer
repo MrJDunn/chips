@@ -4,6 +4,11 @@
               pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn">
   <MAINGROUP id="ffMzSM" name="Chips">
     <GROUP id="{0D49C7E3-B330-A4B4-D6C1-F5862CD3E2B0}" name="Source">
+      <GROUP id="{3EEFF996-C56C-2A9C-58AA-BBFEFA7826E5}" name="Components">
+        <FILE id="WOlfhX" name="WaveformView.cpp" compile="1" resource="0"
+              file="Source/Components/WaveformView.cpp"/>
+        <FILE id="P2PFSU" name="WaveformView.h" compile="0" resource="0" file="Source/Components/WaveformView.h"/>
+      </GROUP>
       <GROUP id="{B187A54C-38A6-45E2-44F4-3339707A3AFF}" name="Utility">
         <FILE id="nYhfzs" name="Converter.h" compile="0" resource="0" file="Source/Utility/Converter.h"/>
       </GROUP>

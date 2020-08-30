@@ -13,6 +13,8 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
 
+#include "Components/WaveformView.h"
+
 //==============================================================================
 /**
 */
@@ -47,6 +49,8 @@ private:
 
 	ComboBox cWaveform;
 
+	WaveformView waveView;
+
 	struct TextValues
 	{
 		static constexpr char* VOLUME = "Volume";
@@ -58,7 +62,7 @@ private:
 
 	struct SizeValues
 	{
-		static constexpr int LABEL_WIDTH = 100;
+		static constexpr int LABEL_WIDTH = 75;
 		static constexpr int SLIDER_HEIGHT = 25;
 	};
 

@@ -75,6 +75,58 @@ public:
 	void setSustain(int);
 	void setRelease(int);
 
+	//==============================================================================
+	// UI hooks
+	struct BufferHelper
+	{
+		void giveMeBufferStuff(std::vector<float>& bufferToFill)
+		{
+			ScopedLock lock(section);
+
+			size_t size = lastBuffer.size();
+			bufferToFill.resize(size);
+
+			for (int i = 0; i < size; i++)
+			{
+				jassert(i < lastBuffer.size());
+				bufferToFill[i] = lastBuffer.at(i);
+			}
+		}
+
+		void clearBuffer(size_t numSamples)
+		{
+			lastBuffer.resize(numSamples);
+
+			for (int i = 0; i < numSamples; i++)
+			{
+				jassert(i < numSamples);
+				lastBuffer[i] = 0;
+			}	
+		}
+
+		void saveBuffer(AudioBuffer<float>& bufferRef)
+		{
+			ScopedLock lock(section);
+
+			auto numChannels = bufferRef.getNumChannels();
+			auto numSamples = bufferRef.getNumSamples();
+
+			clearBuffer(numSamples);	
+
+			for (int i = 0; i < numSamples; i++)
+			{
+				for (int channel = 0; channel < numChannels; channel++)
+				{
+					auto readPtr = bufferRef.getReadPointer(channel);
+					jassert(i < numSamples);
+					lastBuffer[i] += readPtr[i];
+				}
+			}
+		}
+		std::vector<float> lastBuffer;
+		CriticalSection section;
+	} bufferHelper;
+
 private:
 
 	WaveBase* wave;

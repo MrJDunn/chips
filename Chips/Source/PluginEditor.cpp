@@ -13,7 +13,7 @@
 
 //==============================================================================
 ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
-    : AudioProcessorEditor (&p), processor (p)
+    : AudioProcessorEditor (&p), processor(p), waveView(p)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -92,6 +92,9 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	lRelease.attachToComponent(&sRelease, true);
 	lRelease.setText(String(TextValues::RELEASE), dontSendNotification);
 
+	// Wave view
+	addAndMakeVisible(waveView);
+
 	initialiseParameters();
 }
 
@@ -114,25 +117,27 @@ void ChipsAudioProcessorEditor::resized()
 
 	cWaveform.setBounds(area.removeFromTop(SizeValues::SLIDER_HEIGHT));
 
-	auto volumeArea = area.removeFromTop(SizeValues::SLIDER_HEIGHT);
+	auto volumeArea = area.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
 	lVolume.setBounds(volumeArea.removeFromLeft(SizeValues::LABEL_WIDTH));
 	sVolume.setBounds(volumeArea);
 
-	auto attackArea = area.removeFromTop(SizeValues::SLIDER_HEIGHT);
+	auto attackArea = area.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
 	lAttack.setBounds(attackArea.removeFromLeft(SizeValues::LABEL_WIDTH));
 	sAttack.setBounds(attackArea);
 
-	auto decayArea = area.removeFromTop(SizeValues::SLIDER_HEIGHT);
+	auto decayArea = area.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
 	lDecay.setBounds(decayArea.removeFromLeft(SizeValues::LABEL_WIDTH));
 	sDecay.setBounds(decayArea);
 
-	auto sustainArea = area.removeFromTop(SizeValues::SLIDER_HEIGHT);
+	auto sustainArea = area.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
 	lSustain.setBounds(sustainArea.removeFromLeft(SizeValues::LABEL_WIDTH));
 	sSustain.setBounds(sustainArea);
 
-	auto releaseArea = area.removeFromTop(SizeValues::SLIDER_HEIGHT);
+	auto releaseArea = area.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
 	lRelease.setBounds(releaseArea.removeFromLeft(SizeValues::LABEL_WIDTH));
 	sRelease.setBounds(releaseArea);
+
+	waveView.setBounds(area.reduced(10));
 }
 
 void ChipsAudioProcessorEditor::initialiseParameters()
