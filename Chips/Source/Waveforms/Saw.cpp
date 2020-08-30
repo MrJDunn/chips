@@ -21,7 +21,7 @@ Saw::~Saw()
 void Saw::updateNoteAngleDelta(Note& note)
 {
 	auto cyclesPerSample = Converter::midiNoteToFrequency(note.midiValue) / sampleRate;
-	note.angleDelta = cyclesPerSample * 2.0 * juce::MathConstants<double>::pi;
+	note.angleDelta = cyclesPerSample;// *2.0 * juce::MathConstants<double>::pi;
 }
 
 /*
