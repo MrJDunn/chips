@@ -21,7 +21,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 
 	// Waveform
 	addAndMakeVisible(cWaveform);
-	cWaveform.addItemList(StringArray{"Noise","Atonal Beep","Sine","Square"}, 1);
+	cWaveform.addItemList(StringArray{"Noise","Atonal Beep","Sine","Square","Saw","Triangle"}, 1);
 	cWaveform.onChange = [this]
 	{
 		processor.setWaveform(cWaveform.getSelectedId());
@@ -102,12 +102,7 @@ ChipsAudioProcessorEditor::~ChipsAudioProcessorEditor()
 //==============================================================================
 void ChipsAudioProcessorEditor::paint (Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
 
-    g.setColour (Colours::white);
-    g.setFont (15.0f);
-    g.drawFittedText ("Hello World!", getLocalBounds(), Justification::centred, 1);
 }
 
 void ChipsAudioProcessorEditor::resized()

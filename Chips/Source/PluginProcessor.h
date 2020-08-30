@@ -19,6 +19,8 @@
 #include "Waveforms/AtonalBeep.h"
 #include "Waveforms/Sine.h"
 #include "Waveforms/Square.h"
+#include "Waveforms/Saw.h"
+#include "Waveforms/Triangle.h"
 
 //==============================================================================
 /**

@@ -241,6 +241,18 @@ void ChipsAudioProcessor::setWaveform(int newWaveform)
 		wave = new Square();
 		break;
 	}
+	case 5:
+	{
+		delete wave;
+		wave = new Saw();
+		break;
+	}
+	case 6:
+	{
+		delete wave;
+		wave = new Triangle();
+		break;
+	}
 	default:
 	{
 		// invalid waveform
@@ -285,7 +297,7 @@ void ChipsAudioProcessor::calculateMagintude(Note* note)
 		note->smoothingFactor *= 10.01;
 		if (note->amplitude < envelope.amplitude)
 		{
-			note->amplitude *= note->smoothingFactor;
+			note->amplitude *= envelope.attack * note->smoothingFactor;
 		}
 		else
 		{
@@ -314,7 +326,7 @@ void ChipsAudioProcessor::calculateMagintude(Note* note)
 
 		if (note->amplitude > 0.05f)
 		{
-			note->amplitude *= note->smoothingFactor;
+			note->amplitude *= envelope.release * note->smoothingFactor;
 		}
 		else
 		{
