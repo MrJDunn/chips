@@ -179,7 +179,7 @@ void ChipsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
 		{
 			calculateMagintude(&noteTracker[i]);
 
-			if (noteTracker[i].state != Note::Off)// || i == 64)
+			if (noteTracker[i].state != Note::Off)//|| i == 64)
 			{
 				//wave->reset(buffer);
 				wave->perform(noteTracker[i], buffer);
@@ -298,7 +298,7 @@ void ChipsAudioProcessor::calculateMagintude(Note* note)
 		note->smoothingFactor *= 10.01;
 		if (note->amplitude < envelope.amplitude)
 		{
-			note->amplitude *= envelope.attack * note->smoothingFactor;
+			note->amplitude += envelope.attack;
 		}
 		else
 		{
@@ -325,25 +325,15 @@ void ChipsAudioProcessor::calculateMagintude(Note* note)
 	{
 		note->smoothingFactor *= 0.01;
 
-		if (note->amplitude > 0.05f)
+		if (note->amplitude > 0.0f)
 		{
-			note->amplitude *= envelope.release * note->smoothingFactor;
+			note->amplitude -= envelope.release;
 		}
 		else
 		{
 			note->amplitude = 0.0f;
 			note->state = Note::Off;
 		}
-
-		//if (note->amplitude > 0.0f)
-		//{
-		//	note->amplitude -= envelope.release;
-		//}
-		//else
-		//{
-		//	note->amplitude = 0.0f;
-		//	note->state = Note::Off;
-		//}
 		break;
 	};
 	}

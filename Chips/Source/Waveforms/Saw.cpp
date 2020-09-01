@@ -21,7 +21,7 @@ Saw::~Saw()
 void Saw::updateNoteAngleDelta(Note& note)
 {
 	auto cyclesPerSample = Converter::midiNoteToFrequency(note.midiValue) / sampleRate;
-	note.angleDelta = cyclesPerSample;// *2.0 * juce::MathConstants<double>::pi;
+	note.angleDelta = cyclesPerSample * note.amplitude;
 }
 
 /*
@@ -42,13 +42,13 @@ void Saw::updateNoteAngleDelta(Note& note)
 void Saw::fillBuffer(Note& note, float* writePointer)
 {
 	updateNoteAngleDelta(note);
-	if (lastAmplitude - note.angleDelta > (note.amplitude * -1) / 2)
+	if (lastAmplitude - note.angleDelta > abs(note.amplitude) * -1)
 	{
 		*writePointer = lastAmplitude - note.angleDelta;
 	}
 	else
 	{
-		*writePointer = note.amplitude / 2;
+		*writePointer = abs(note.amplitude);
 	}
 
 	lastAmplitude = *writePointer;
