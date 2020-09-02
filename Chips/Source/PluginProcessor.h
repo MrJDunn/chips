@@ -81,7 +81,7 @@ public:
 	{
 		void giveMeBufferStuff(std::vector<float>& bufferToFill)
 		{
-			ScopedLock lock(section);
+			//ScopedLock lock(section);
 
 			size_t size = lastBuffer.size();
 			bufferToFill.resize(size);
@@ -106,7 +106,7 @@ public:
 
 		void saveBuffer(AudioBuffer<float>& bufferRef)
 		{
-			ScopedLock lock(section);
+			//ScopedLock lock(section);
 
 			auto numChannels = bufferRef.getNumChannels();
 			auto numSamples = bufferRef.getNumSamples();
