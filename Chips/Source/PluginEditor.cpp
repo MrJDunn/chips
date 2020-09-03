@@ -92,6 +92,19 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	lRelease.attachToComponent(&sRelease, true);
 	lRelease.setText(String(TextValues::RELEASE), dontSendNotification);
 
+	// Pulse Width
+	addAndMakeVisible(sPulseWidth);
+	sPulseWidth.setSliderStyle(Slider::SliderStyle::LinearBar);
+	sPulseWidth.onValueChange = [this]
+	{
+		processor.setPulseWidth(sPulseWidth.getValue());
+	};
+	sPulseWidth.setRange({ -50, 50 }, 1);
+
+	addAndMakeVisible(lPulseWidth);
+	lPulseWidth.attachToComponent(&sPulseWidth, true);
+	lPulseWidth.setText(String(TextValues::PULSE_WIDTH), dontSendNotification);
+
 	// Wave view
 	addAndMakeVisible(waveView);
 
@@ -137,6 +150,10 @@ void ChipsAudioProcessorEditor::resized()
 	lRelease.setBounds(releaseArea.removeFromLeft(SizeValues::LABEL_WIDTH));
 	sRelease.setBounds(releaseArea);
 
+	auto pulseWidthArea = area.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
+	lPulseWidth.setBounds(pulseWidthArea.removeFromLeft(SizeValues::LABEL_WIDTH));
+	sPulseWidth.setBounds(pulseWidthArea);
+
 	waveView.setBounds(area.reduced(10));
 }
 
@@ -149,4 +166,5 @@ void ChipsAudioProcessorEditor::initialiseParameters()
 	sSustain.setValue(50.0);
 	sRelease.setValue(50.0);
 	sAttack.setValue(50.0);
+	sPulseWidth.setValue(0.0);
 }

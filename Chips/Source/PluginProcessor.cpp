@@ -179,8 +179,10 @@ void ChipsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
 		{
 			calculateMagintude(&noteTracker[i]);
 
-			if (noteTracker[i].state != Note::Off)//|| i == 64)
+			if (noteTracker[i].state != Note::Off)// || i == 64)
 			{
+				noteTracker[i].pulseWidth = envelope.pulseWidth;
+
 				//wave->reset(buffer);
 				wave->perform(noteTracker[i], buffer);
 			}
@@ -286,6 +288,11 @@ void ChipsAudioProcessor::setSustain(int value)
 void ChipsAudioProcessor::setRelease(int value)
 {
 	envelope.release = value / 500.0f;
+}
+
+void ChipsAudioProcessor::setPulseWidth(int value)
+{
+	envelope.pulseWidth = value / 50.1f;
 }
 
 void ChipsAudioProcessor::calculateMagintude(Note* note)

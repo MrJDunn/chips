@@ -40,12 +40,14 @@ private:
 	Slider sDecay;
 	Slider sSustain;
 	Slider sRelease;
+	Slider sPulseWidth;
 
 	Label lVolume;
 	Label lAttack;
 	Label lDecay;
 	Label lSustain;
 	Label lRelease;
+	Label lPulseWidth;
 
 	ComboBox cWaveform;
 
@@ -58,6 +60,7 @@ private:
 		static constexpr char* DECAY = "Decay";
 		static constexpr char* SUSTAIN = "Sustain";
 		static constexpr char* RELEASE = "Release";
+		static constexpr char* PULSE_WIDTH = "Pulse Width";
 	};
 
 	struct SizeValues

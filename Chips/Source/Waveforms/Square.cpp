@@ -33,6 +33,8 @@ void Square::updateNoteAngleDelta(Note& note)
 void Square::fillBuffer(Note& note, float *writePointer)
 {
 	updateNoteAngleDelta(note);
-	*writePointer += (sin(note.currentAngle) > 0 ? 1 : -1) * (note.amplitude / 2);
+
+	*writePointer += (sin(note.currentAngle) - note.pulseWidth > 0 ? 1 : -1) * (note.amplitude / 2);
+
 	note.currentAngle += note.angleDelta;
 }

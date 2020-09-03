@@ -74,6 +74,7 @@ public:
 	void setDecay(int);
 	void setSustain(int);
 	void setRelease(int);
+	void setPulseWidth(int);
 
 	//==============================================================================
 	// UI hooks
@@ -138,6 +139,7 @@ private:
 		float decay = 0.0f;		// time taken to fallof after sustain period
 		float sustain = 0.0f;	// the duration of the sustain
 		float release = 0.0f;	// the duration taken to reach 0 after release
+		float pulseWidth = 0.0f;
 	} envelope;
 
 	//==============================================================================

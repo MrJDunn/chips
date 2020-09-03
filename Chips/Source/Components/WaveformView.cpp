@@ -12,7 +12,7 @@
 
 WaveformView::WaveformView(ChipsAudioProcessor& p): processor(p)
 {
-	startTimer(10);
+	startTimer(30);
 }
 
 WaveformView::~WaveformView()
