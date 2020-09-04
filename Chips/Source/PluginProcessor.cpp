@@ -16,8 +16,24 @@
 ChipsAudioProcessor::ChipsAudioProcessor(): 
 	AudioProcessor(BusesProperties()
 		.withInput("Input", AudioChannelSet::stereo(), false)
-		.withOutput ("Output", AudioChannelSet::stereo(), true))
+		.withOutput ("Output", AudioChannelSet::stereo(), true)),
+	state("ChipsState"),
+	waveIdentifier("wave"),
+	amplitudeIdentifier("amplitude"),
+	attackIdentifier("attack"),
+	decayIdentifier("decay"),
+	sustainPathsIdentifier("sustain"),
+	releaseIdentifier("release"),
+	pulseWidthIdentifier("pulseWidth")
 {
+	state.setProperty(waveIdentifier, 1.0f, nullptr);
+	state.setProperty(amplitudeIdentifier, 50.0f, nullptr);
+	state.setProperty(attackIdentifier, 50.0f, nullptr);
+	state.setProperty(decayIdentifier, 50.0f, nullptr);
+	state.setProperty(sustainPathsIdentifier, 50.0f, nullptr);
+	state.setProperty(releaseIdentifier, 50.0f, nullptr);
+	state.setProperty(pulseWidthIdentifier, 0.0f, nullptr);
+
 	wave = nullptr;
 }
 
@@ -205,15 +221,45 @@ AudioProcessorEditor* ChipsAudioProcessor::createEditor()
 //==============================================================================
 void ChipsAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+	DBG(state.toXmlString());
+
+	std::unique_ptr<juce::XmlElement> xml(state.createXml());
+	copyXmlToBinary(*xml, destData);
 }
 
 void ChipsAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+	std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+
+	if (xmlState.get() != nullptr)
+	{
+		if (xmlState->hasTagName("ChipsState"))
+		{
+			ValueTree state = juce::ValueTree::fromXml(*xmlState);
+
+			if(state.hasProperty("wave"))
+				setWaveform(state.getProperty("wave"));
+
+			if (state.hasProperty("amplitude"))
+				setAmplitude(state.getProperty("amplitude"));
+
+			if (state.hasProperty("attack"))
+				setAttack(state.getProperty("attack"));
+
+			if (state.hasProperty("decay"))
+				setDecay(state.getProperty("decay"));
+
+			if (state.hasProperty("sustain"))
+				setSustain(state.getProperty("sustain"));
+	
+			if (state.hasProperty("release"))
+				setRelease(state.getProperty("release"));
+
+			if (state.hasProperty("pulseWidth"))
+				setPulseWidth(state.getProperty("pulseWidth"));
+
+		}
+	}
 }
 
 void ChipsAudioProcessor::setWaveform(int newWaveform)
@@ -223,7 +269,7 @@ void ChipsAudioProcessor::setWaveform(int newWaveform)
 	case 1:
 	{
 		delete wave;
-		wave = new Noise();
+		wave = new Square();
 		break;
 	}
 	case 2:
@@ -241,7 +287,7 @@ void ChipsAudioProcessor::setWaveform(int newWaveform)
 	case 4:
 	{
 		delete wave;
-		wave = new Square();
+		wave = new Triangle();
 		break;
 	}
 	case 5:
@@ -253,7 +299,7 @@ void ChipsAudioProcessor::setWaveform(int newWaveform)
 	case 6:
 	{
 		delete wave;
-		wave = new Triangle();
+		wave = new Noise();
 		break;
 	}
 	default:
@@ -263,36 +309,78 @@ void ChipsAudioProcessor::setWaveform(int newWaveform)
 		break;
 	}
 	}
+	state.setProperty(waveIdentifier, newWaveform, nullptr);
 }
 
 void ChipsAudioProcessor::setAmplitude(int value)
 {
-	envelope.amplitude = value / 100.0f;
+	envelope.amplitude = value / 100.1f;
+	state.setProperty(amplitudeIdentifier, value, nullptr);
 }
 
 void ChipsAudioProcessor::setAttack(int value)
 {
-	envelope.attack = value / 500.0f;
+	envelope.attack = value / 500.1f;
+	state.setProperty(attackIdentifier, value, nullptr);
 }
 
 void ChipsAudioProcessor::setDecay(int value)
 {
-	envelope.decay = value / 500.0f;
+	envelope.decay = value / 500.1f;
+	state.setProperty(decayIdentifier, value, nullptr);
 }
 
 void ChipsAudioProcessor::setSustain(int value)
 {
-	envelope.sustain = value / 100.0f;
+	envelope.sustain = value / 100.1f;
+	state.setProperty(sustainPathsIdentifier, value, nullptr);
 }
 
 void ChipsAudioProcessor::setRelease(int value)
 {
-	envelope.release = value / 500.0f;
+	envelope.release = value / 500.1f;
+	state.setProperty(releaseIdentifier, value, nullptr);
 }
 
 void ChipsAudioProcessor::setPulseWidth(int value)
 {
 	envelope.pulseWidth = value / 50.1f;
+	state.setProperty(pulseWidthIdentifier, value, nullptr);
+}
+
+int ChipsAudioProcessor::getWaveform()
+{
+	return state.getProperty("wave");
+}
+
+int ChipsAudioProcessor::getAmplitude()
+{
+	return state.getProperty("amplitude");
+}
+
+int ChipsAudioProcessor::getAttack()
+{
+	return state.getProperty("attack");
+}
+
+int ChipsAudioProcessor::getDecay()
+{
+	return state.getProperty("decay");
+}
+
+int ChipsAudioProcessor::getSustain()
+{
+	return state.getProperty("sustain");
+}
+
+int ChipsAudioProcessor::getRelease()
+{
+	return state.getProperty("release");
+}
+
+int ChipsAudioProcessor::getPulseWidth()
+{
+	return state.getProperty("pulseWidth");
 }
 
 void ChipsAudioProcessor::calculateMagintude(Note* note)

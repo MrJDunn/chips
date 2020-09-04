@@ -21,7 +21,7 @@ WaveformView::~WaveformView()
 
 void WaveformView::paint(Graphics& g)
 {
-	g.setColour(Colours::grey);
+	g.setColour(Colours::grey.brighter());
 	g.fillAll();
 	auto bufferLength = buffer.size();
 	auto width = getLocalBounds().getWidth();
@@ -37,7 +37,7 @@ void WaveformView::paint(Graphics& g)
 	{
 		jassert(i < buffer.size());
 
-		thisSample = buffer.at(i) * amplitude + 80.0f;
+		thisSample = buffer.at(i) * amplitude + height/2;
 		g.drawLine({(float)i/ divisor, lastSample,(float)(i + 1.0f) / divisor, thisSample });
 		lastSample = thisSample;
 	}

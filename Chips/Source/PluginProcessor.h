@@ -76,6 +76,15 @@ public:
 	void setRelease(int);
 	void setPulseWidth(int);
 
+	int getWaveform();
+	int getAmplitude();
+
+	int getAttack();
+	int getDecay();
+	int getSustain();
+	int getRelease();
+	int getPulseWidth();
+
 	//==============================================================================
 	// UI hooks
 	struct BufferHelper
@@ -131,14 +140,24 @@ public:
 private:
 
 	WaveBase* wave;
+	ValueTree state;
+
+	Identifier waveIdentifier;
+	Identifier amplitudeIdentifier;
+	Identifier attackIdentifier;
+	Identifier decayIdentifier;
+	Identifier sustainPathsIdentifier;
+	Identifier releaseIdentifier;
+	Identifier pulseWidthIdentifier;
 
 	struct Envelope
 	{
-		float amplitude = 0.0f;
-		float attack = 0.0f;	// the duration taken to achieve the volume
-		float decay = 0.0f;		// time taken to fallof after sustain period
-		float sustain = 0.0f;	// the duration of the sustain
-		float release = 0.0f;	// the duration taken to reach 0 after release
+		float wave = 1.0f;
+		float amplitude = 50.0f;
+		float attack = 50.0f;		// the duration taken to achieve the volume
+		float decay = 50.0f;			// time taken to fallof after sustain period
+		float sustain = 50.0f;		// the duration of the sustain
+		float release = 50.0f;		// the duration taken to reach 0 after release
 		float pulseWidth = 0.0f;
 	} envelope;
 

@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="cFxdiW" name="Chips" projectType="audioplug" jucerVersion="5.4.3"
-              pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn">
+              pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
+              bundleIdentifier="com.audimancy.chips" version="1.0.0" companyName="Audimancy"
+              pluginName="Chips" pluginDesc="Chips" pluginManufacturer="Audimancy"
+              pluginManufacturerCode="AmcY" pluginCode="Ch|p">
   <MAINGROUP id="ffMzSM" name="Chips">
     <GROUP id="{0D49C7E3-B330-A4B4-D6C1-F5862CD3E2B0}" name="Source">
+      <GROUP id="{F1E2888C-ABBB-8657-591D-414A142A7BF0}" name="Style">
+        <FILE id="aDipKn" name="ChipsLookAndFeel.h" compile="0" resource="0"
+              file="Source/Style/ChipsLookAndFeel.h"/>
+      </GROUP>
       <GROUP id="{3EEFF996-C56C-2A9C-58AA-BBFEFA7826E5}" name="Components">
         <FILE id="WOlfhX" name="WaveformView.cpp" compile="1" resource="0"
               file="Source/Components/WaveformView.cpp"/>

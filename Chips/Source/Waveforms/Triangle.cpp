@@ -21,7 +21,7 @@ Triangle::~Triangle()
 void Triangle::updateNoteAngleDelta(Note& note)
 {
 	auto cyclesPerSample = Converter::midiNoteToFrequency(note.midiValue) / sampleRate;
-	note.angleDelta = cyclesPerSample * note.amplitude;
+	note.angleDelta = cyclesPerSample * note.amplitude * 4;
 }
 
 void Triangle::fillBuffer(Note& note, float* writePointer)

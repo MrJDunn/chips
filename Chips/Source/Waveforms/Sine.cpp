@@ -33,6 +33,6 @@ void Sine::updateNoteAngleDelta(Note& note)
 void Sine::fillBuffer(Note& note, float *writePointer)
 {
 	updateNoteAngleDelta(note);
-	*writePointer += sin(note.currentAngle) * (note.amplitude / 2);
+	*writePointer += sin(note.currentAngle - note.pulseWidth) * (note.amplitude / 2);
 	note.currentAngle += note.angleDelta;
 }

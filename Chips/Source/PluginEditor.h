@@ -15,6 +15,8 @@
 
 #include "Components/WaveformView.h"
 
+#include "Style/ChipsLookAndFeel.h"
+
 //==============================================================================
 /**
 */
@@ -33,6 +35,8 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     ChipsAudioProcessor& processor;
+
+	ChipsLookAndFeel style;
 
 	Slider sVolume;
 
@@ -55,22 +59,23 @@ private:
 
 	struct TextValues
 	{
-		static constexpr char* VOLUME = "Volume";
-		static constexpr char* ATTACK = "Attack";
-		static constexpr char* DECAY = "Decay";
-		static constexpr char* SUSTAIN = "Sustain";
-		static constexpr char* RELEASE = "Release";
-		static constexpr char* PULSE_WIDTH = "Pulse Width";
+		static constexpr char* VOLUME = "vol";
+		static constexpr char* ATTACK = "atk";
+		static constexpr char* DECAY = "dcy";
+		static constexpr char* SUSTAIN = "sus";
+		static constexpr char* RELEASE = "rel";
+		static constexpr char* PULSE_WIDTH = "pwm";
 	};
 
 	struct SizeValues
 	{
-		static constexpr int LABEL_WIDTH = 75;
+		static constexpr int LABEL_WIDTH = 50;
 		static constexpr int SLIDER_HEIGHT = 25;
 	};
 
 	void initialiseParameters();
 
+	void initialiseSlider(Slider* slider);
 	
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChipsAudioProcessorEditor)
 };

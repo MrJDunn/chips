@@ -15,21 +15,22 @@
 ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
     : AudioProcessorEditor (&p), processor(p), waveView(p)
 {
+	setLookAndFeel(&style);
+
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (400, 300);
 
 	// Waveform
 	addAndMakeVisible(cWaveform);
-	cWaveform.addItemList(StringArray{"Noise","Atonal Beep","Sine","Square","Saw","Triangle"}, 1);
+	cWaveform.addItemList(StringArray{"Square","Atonal Beep","Sine","Triangle","Saw","Noise"}, 1);
 	cWaveform.onChange = [this]
 	{
 		processor.setWaveform(cWaveform.getSelectedId());
 	};
 
 	// Volume
-	addAndMakeVisible(sVolume);
-	sVolume.setSliderStyle(Slider::SliderStyle::LinearBar);
+	initialiseSlider(&sVolume);
 	sVolume.onValueChange = [this] 
 	{
 		processor.setAmplitude(sVolume.getValue());
@@ -41,8 +42,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	lVolume.setText(String(TextValues::VOLUME), dontSendNotification);
 
 	// Attack
-	addAndMakeVisible(sAttack);
-	sAttack.setSliderStyle(Slider::SliderStyle::LinearBar);
+	initialiseSlider(&sAttack);
 	sAttack.onValueChange = [this]
 	{
 		processor.setAttack(sAttack.getValue());
@@ -54,8 +54,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	lAttack.setText(String(TextValues::ATTACK), dontSendNotification);
 
 	// Decay
-	addAndMakeVisible(sDecay);
-	sDecay.setSliderStyle(Slider::SliderStyle::LinearBar);
+	initialiseSlider(&sDecay);
 	sDecay.onValueChange = [this]
 	{
 		processor.setDecay(sDecay.getValue());
@@ -67,8 +66,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	lDecay.setText(String(TextValues::DECAY), dontSendNotification);
 
 	// Sustain
-	addAndMakeVisible(sSustain);
-	sSustain.setSliderStyle(Slider::SliderStyle::LinearBar);
+	initialiseSlider(&sSustain);
 	sSustain.onValueChange = [this]
 	{
 		processor.setSustain(sSustain.getValue());
@@ -80,8 +78,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	lSustain.setText(String(TextValues::SUSTAIN), dontSendNotification);
 
 	// Release
-	addAndMakeVisible(sRelease);
-	sRelease.setSliderStyle(Slider::SliderStyle::LinearBar);
+	initialiseSlider(&sRelease);
 	sRelease.onValueChange = [this]
 	{
 		processor.setRelease(sRelease.getValue());
@@ -93,8 +90,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	lRelease.setText(String(TextValues::RELEASE), dontSendNotification);
 
 	// Pulse Width
-	addAndMakeVisible(sPulseWidth);
-	sPulseWidth.setSliderStyle(Slider::SliderStyle::LinearBar);
+	initialiseSlider(&sPulseWidth);
 	sPulseWidth.onValueChange = [this]
 	{
 		processor.setPulseWidth(sPulseWidth.getValue());
@@ -113,12 +109,14 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 
 ChipsAudioProcessorEditor::~ChipsAudioProcessorEditor()
 {
+	setLookAndFeel(nullptr);
 }
 
 //==============================================================================
 void ChipsAudioProcessorEditor::paint (Graphics& g)
 {
-
+	g.setColour(style.colours.getBackgroundLight());
+	g.fillAll();
 }
 
 void ChipsAudioProcessorEditor::resized()
@@ -130,41 +128,51 @@ void ChipsAudioProcessorEditor::resized()
 
 	cWaveform.setBounds(area.removeFromTop(SizeValues::SLIDER_HEIGHT));
 
-	auto volumeArea = area.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
+	auto parameterDisplayArea = area.removeFromTop(area.getHeight() / 3);
+	auto rightColumn = parameterDisplayArea.removeFromRight(area.getWidth() / 2);
+	auto leftColumn = parameterDisplayArea;
+
+	auto volumeArea = leftColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
 	lVolume.setBounds(volumeArea.removeFromLeft(SizeValues::LABEL_WIDTH));
-	sVolume.setBounds(volumeArea);
+	sVolume.setBounds(volumeArea.reduced(5));
 
-	auto attackArea = area.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
+	auto attackArea = leftColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
 	lAttack.setBounds(attackArea.removeFromLeft(SizeValues::LABEL_WIDTH));
-	sAttack.setBounds(attackArea);
+	sAttack.setBounds(attackArea.reduced(5));
 
-	auto decayArea = area.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
+	auto decayArea = leftColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
 	lDecay.setBounds(decayArea.removeFromLeft(SizeValues::LABEL_WIDTH));
-	sDecay.setBounds(decayArea);
+	sDecay.setBounds(decayArea.reduced(5));
 
-	auto sustainArea = area.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
+	auto sustainArea = rightColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
 	lSustain.setBounds(sustainArea.removeFromLeft(SizeValues::LABEL_WIDTH));
-	sSustain.setBounds(sustainArea);
+	sSustain.setBounds(sustainArea.reduced(5));
 
-	auto releaseArea = area.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
+	auto releaseArea = rightColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
 	lRelease.setBounds(releaseArea.removeFromLeft(SizeValues::LABEL_WIDTH));
-	sRelease.setBounds(releaseArea);
+	sRelease.setBounds(releaseArea.reduced(5));
 
-	auto pulseWidthArea = area.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
+	auto pulseWidthArea = rightColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
 	lPulseWidth.setBounds(pulseWidthArea.removeFromLeft(SizeValues::LABEL_WIDTH));
-	sPulseWidth.setBounds(pulseWidthArea);
+	sPulseWidth.setBounds(pulseWidthArea.reduced(5));
 
 	waveView.setBounds(area.reduced(10));
 }
 
 void ChipsAudioProcessorEditor::initialiseParameters()
 {
-	cWaveform.setSelectedId(1);
-	sVolume.setValue(50.0);
-	sAttack.setValue(50.0);
-	sDecay.setValue(50.0);
-	sSustain.setValue(50.0);
-	sRelease.setValue(50.0);
-	sAttack.setValue(50.0);
-	sPulseWidth.setValue(0.0);
+	cWaveform.setSelectedId(processor.getWaveform());
+	sVolume.setValue(processor.getAmplitude());
+	sAttack.setValue(processor.getAttack());
+	sDecay.setValue(processor.getDecay());
+	sSustain.setValue(processor.getSustain());
+	sRelease.setValue(processor.getRelease());
+	sPulseWidth.setValue(processor.getPulseWidth());
+}
+
+void ChipsAudioProcessorEditor::initialiseSlider(Slider* slider)
+{
+	addAndMakeVisible(*slider);
+	slider->setSliderStyle(Slider::SliderStyle::LinearHorizontal);
+	slider->setTextBoxStyle(Slider::NoTextBox, false, 0, 0);
 }
