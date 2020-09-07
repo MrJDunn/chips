@@ -21,5 +21,5 @@ Noise::~Noise()
 
 void Noise::fillBuffer(Note& note, float *writePointer)
 {
-	*writePointer = *writePointer + (random->nextFloat() * 2.0f - 1.0f) * note.amplitude;
+	*writePointer += *writePointer + (random->nextFloat() * 2.0f - 1.0f) * note.amplitude;
 }

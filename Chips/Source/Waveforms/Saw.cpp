@@ -42,15 +42,18 @@ void Saw::updateNoteAngleDelta(Note& note)
 void Saw::fillBuffer(Note& note, float* writePointer)
 {
 	updateNoteAngleDelta(note);
-	if (lastAmplitude - note.angleDelta > abs(note.amplitude) * -1)
+	double sampleToAdd = 0.0;
+
+	if (lastAmplitude - note.angleDelta > abs(note.amplitude / 4) * -1)
 	{
-		*writePointer = lastAmplitude - note.angleDelta;
+		sampleToAdd = lastAmplitude - note.angleDelta;
 	}
 	else
 	{
-		*writePointer = abs(note.amplitude);
+		sampleToAdd = abs(note.amplitude / 4);
 	}
 
-	lastAmplitude = *writePointer;
+	lastAmplitude = sampleToAdd;
+	*writePointer += sampleToAdd;
 	note.currentAngle = note.angleDelta;
 }

@@ -420,7 +420,7 @@ void ChipsAudioProcessor::calculateMagintude(Note* note)
 	{
 		note->smoothingFactor *= 0.01;
 
-		if (note->amplitude > 0.0f)
+		if (note->amplitude - envelope.release > 0.0f)
 		{
 			note->amplitude -= envelope.release;
 		}

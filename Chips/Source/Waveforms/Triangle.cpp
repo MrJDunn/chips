@@ -27,24 +27,26 @@ void Triangle::updateNoteAngleDelta(Note& note)
 void Triangle::fillBuffer(Note& note, float* writePointer)
 {
 	updateNoteAngleDelta(note);
-
+	double sampleToAdd = 0.0;
 	if (rising)
 	{
-		if (lastAmplitude - note.angleDelta < abs(note.amplitude) * -1)
+		if (lastAmplitude - note.angleDelta < abs(note.amplitude / 4) * -1)
 		{
 			rising = !rising;
 		}
-		*writePointer = lastAmplitude - note.angleDelta;
+		sampleToAdd = lastAmplitude - note.angleDelta;
 	}
 	else
 	{
-		if (lastAmplitude + note.angleDelta > abs(note.amplitude))
+		if (lastAmplitude + note.angleDelta > abs(note.amplitude / 4))
 		{
 			rising = !rising;
 		}
-		*writePointer = lastAmplitude + note.angleDelta;
+		sampleToAdd = lastAmplitude + note.angleDelta;
 	}
 
-	lastAmplitude = *writePointer;
+	lastAmplitude = sampleToAdd;
+
+	*writePointer += sampleToAdd;
 	note.currentAngle = note.angleDelta;
 }
