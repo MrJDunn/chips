@@ -47,6 +47,8 @@
             file="Source/PluginEditor.cpp"/>
       <FILE id="eKazRW" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
+    <FILE id="khQKWL" name="PressStart2P-vaV7.ttf" compile="0" resource="1"
+          file="../../../../../Downloads/press-start-2p-font/PressStart2P-vaV7.ttf"/>
   </MAINGROUP>
   <EXPORTFORMATS>
     <VS2017 targetFolder="Builds/VisualStudio2017">

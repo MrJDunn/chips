@@ -391,7 +391,7 @@ void ChipsAudioProcessor::calculateMagintude(Note* note)
 	case Note::A:
 	{
 		note->smoothingFactor *= 10.01;
-		if (note->amplitude < envelope.amplitude)
+		if (note->amplitude + envelope.attack < envelope.amplitude)
 		{
 			note->amplitude += envelope.attack;
 		}
@@ -404,7 +404,7 @@ void ChipsAudioProcessor::calculateMagintude(Note* note)
 	};
 	case Note::D:
 	{
-		if (note->amplitude > envelope.sustain)
+		if (note->amplitude - envelope.decay > envelope.sustain)
 		{
 			note->amplitude -= envelope.decay;
 		}

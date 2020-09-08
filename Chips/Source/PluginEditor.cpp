@@ -17,6 +17,9 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 {
 	setLookAndFeel(&style);
 
+	Typeface::Ptr myFont = Typeface::createSystemTypefaceFor(BinaryData::PressStart2PvaV7_ttf, BinaryData::PressStart2PvaV7_ttfSize);
+	getLookAndFeel().setDefaultSansSerifTypeface(myFont);
+
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (400, 300);

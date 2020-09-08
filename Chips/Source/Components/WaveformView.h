@@ -26,6 +26,10 @@ public:
 	void timerCallback() override;
 
 private:
+
+	void paintVerticalLines(Graphics& g);
+	void paintHorizontalLines(Graphics& g);
+
 	ChipsAudioProcessor& processor;
 	std::vector<float> buffer;
 };

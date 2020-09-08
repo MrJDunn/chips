@@ -22,15 +22,19 @@ public:
 		
 		Colour getMenuBackground()
 		{
-			return primary;
+			return Colours::black;//primary;
 		}
 		Colour getButtonBackground()
 		{
-			return primaryDark;
+			return Colours::black;//primaryDark;
+		}
+		Colour getBorder()
+		{
+			return Colours::lawngreen;//primaryLight;
 		}
 		Colour getHighlight()
 		{
-			return primaryLight;
+			return Colours::lawngreen;//primaryLight;
 		}
 		Colour getTransperent()
 		{
@@ -38,23 +42,23 @@ public:
 		}
 		Colour getText()
 		{
-			return textColour;
+			return Colours::lawngreen;//textColour;
 		}
 		Colour getTextInverse()
 		{
-			return textColourInverted;
+			return Colours::black;//textColourInverted;
 		}
 		Colour getBackgroundLight()
 		{
-			return backgorundLight;
+			return Colours::black;//backgorundLight;
 		}
 		Colour getBackgroundDark()
 		{
-			return backgorundDark;
+			return Colours::black;// backgorundDark;
 		}
 		Colour getSliderColour()
 		{
-			return secondary;
+			return Colours::lawngreen;// secondary;
 		}
 	private:
 		Colour invisible = Colour::fromRGBA(0, 0, 0, 0);
@@ -81,8 +85,9 @@ public:
 	ChipsLookAndFeel()
 	{
 		setColour(ComboBox::ColourIds::backgroundColourId, colours.getButtonBackground());
-		setColour(ComboBox::ColourIds::outlineColourId, colours.getTransperent());
-		setColour(ComboBox::ColourIds::textColourId, colours.getTextInverse());
+		setColour(ComboBox::ColourIds::outlineColourId, colours.getBorder());
+		setColour(ComboBox::ColourIds::textColourId, colours.getText());
+		setColour(ComboBox::ColourIds::arrowColourId, colours.getHighlight());
 
 		setColour(Slider::ColourIds::backgroundColourId, colours.getBackgroundDark());
 		setColour(Slider::ColourIds::textBoxTextColourId, colours.getText());
@@ -98,8 +103,15 @@ public:
 
 		setColour(PopupMenu::ColourIds::backgroundColourId, colours.getMenuBackground());
 		setColour(PopupMenu::ColourIds::highlightedBackgroundColourId, colours.getHighlight());
-		setColour(PopupMenu::ColourIds::highlightedTextColourId, colours.getText());
+		setColour(PopupMenu::ColourIds::highlightedTextColourId, colours.getTextInverse());
 		setColour(PopupMenu::ColourIds::textColourId, colours.getText());
-
 	}
+
+	Typeface::Ptr getTypefaceForFont(const Font& f) override
+	{
+		static Typeface::Ptr myFont = Typeface::createSystemTypefaceFor(BinaryData::PressStart2PvaV7_ttf, BinaryData::PressStart2PvaV7_ttfSize);
+		setDefaultSansSerifTypeface(myFont);
+		return myFont;
+	}
+
 };
