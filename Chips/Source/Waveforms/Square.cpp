@@ -20,21 +20,19 @@ Square::~Square()
 
 void Square::updateAngleDelta(double hz)
 {
-	auto cyclesPerSample = hz / sampleRate;
-	angleDelta = cyclesPerSample * 2.0 * juce::MathConstants<double>::pi;
+	angleDelta = (hz / sampleRate) * 2.0 * juce::MathConstants<double>::pi;
 }
 
 void Square::updateNoteAngleDelta(Note& note)
 {
-	auto cyclesPerSample = Converter::midiNoteToFrequency(note.midiValue) / sampleRate;
-	note.angleDelta = cyclesPerSample * 2.0 * juce::MathConstants<double>::pi;
+	note.angleDelta = (Converter::midiNoteToFrequency(note.midiValue) / sampleRate) * 2.0 * juce::MathConstants<double>::pi;
 }
 
 void Square::fillBuffer(Note& note, float *writePointer)
 {
 	updateNoteAngleDelta(note);
 
-	*writePointer += (sin(note.currentAngle) - note.pulseWidth > 0 ? 1 : -1) * (note.amplitude / 2);
+	*writePointer += (sin(note.currentAngle) - note.pulseWidth > 0 ? 1 : -1) * (note.amplitude / 2.0);
 
 	note.currentAngle += note.angleDelta;
 }

@@ -21,7 +21,10 @@ Saw::~Saw()
 void Saw::updateNoteAngleDelta(Note& note)
 {
 	auto cyclesPerSample = Converter::midiNoteToFrequency(note.midiValue) / sampleRate;
-	note.angleDelta = cyclesPerSample * note.amplitude;
+	double run = 1 / cyclesPerSample;
+	double rise = note.amplitude * 2;
+	double gradient = rise / run;
+	note.angleDelta = gradient;
 }
 
 /*
@@ -42,18 +45,16 @@ void Saw::updateNoteAngleDelta(Note& note)
 void Saw::fillBuffer(Note& note, float* writePointer)
 {
 	updateNoteAngleDelta(note);
-	double sampleToAdd = 0.0;
-
-	if (lastAmplitude - note.angleDelta > abs(note.amplitude / 4) * -1)
+	double sampleToAdd = lastAmplitude - note.angleDelta;
+	
+	if(sampleToAdd < abs(note.amplitude / 2.0) * -1)
 	{
-		sampleToAdd = lastAmplitude - note.angleDelta;
-	}
-	else
-	{
-		sampleToAdd = abs(note.amplitude / 4);
+		sampleToAdd = abs(note.amplitude / 2.0);
 	}
 
 	lastAmplitude = sampleToAdd;
+	
 	*writePointer += sampleToAdd;
-	note.currentAngle = note.angleDelta;
+
+	note.currentAngle += note.angleDelta;
 }

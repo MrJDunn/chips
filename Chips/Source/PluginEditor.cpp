@@ -128,9 +128,6 @@ void ChipsAudioProcessorEditor::paint (Graphics& g)
 
 void ChipsAudioProcessorEditor::resized()
 {
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
-
 	auto area = getLocalBounds();
 
 	cWaveform.setBounds(area.removeFromTop(SizeValues::SLIDER_HEIGHT));

@@ -29,4 +29,5 @@ protected:
 	void fillBuffer(Note& note, float* writePointer) override;
 
 	double lastAmplitude = 0.0;
+
 };

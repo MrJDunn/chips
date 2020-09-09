@@ -21,7 +21,10 @@ Triangle::~Triangle()
 void Triangle::updateNoteAngleDelta(Note& note)
 {
 	auto cyclesPerSample = Converter::midiNoteToFrequency(note.midiValue) / sampleRate;
-	note.angleDelta = cyclesPerSample * note.amplitude * 4;
+	double run = 1 / cyclesPerSample;
+	double rise = note.amplitude * 2;
+	double gradient = rise / run;
+	note.angleDelta = gradient;
 }
 
 void Triangle::fillBuffer(Note& note, float* writePointer)
@@ -30,7 +33,7 @@ void Triangle::fillBuffer(Note& note, float* writePointer)
 	double sampleToAdd = 0.0;
 	if (rising)
 	{
-		if (lastAmplitude - note.angleDelta < abs(note.amplitude / 4) * -1)
+		if (lastAmplitude - note.angleDelta < abs(note.amplitude / 4.0) * -1)
 		{
 			rising = !rising;
 		}
@@ -38,7 +41,7 @@ void Triangle::fillBuffer(Note& note, float* writePointer)
 	}
 	else
 	{
-		if (lastAmplitude + note.angleDelta > abs(note.amplitude / 4))
+		if (lastAmplitude + note.angleDelta > abs(note.amplitude / 4.0))
 		{
 			rising = !rising;
 		}
