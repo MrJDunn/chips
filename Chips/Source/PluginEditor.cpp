@@ -120,6 +120,10 @@ void ChipsAudioProcessorEditor::paint (Graphics& g)
 {
 	g.setColour(style.colours.getBackgroundLight());
 	g.fillAll();
+	g.setColour(style.colours.getBackgroundLight());
+	g.fillAll();
+	g.setColour(style.colours.getBorder());
+	g.drawRect(getLocalBounds());
 }
 
 void ChipsAudioProcessorEditor::resized()
