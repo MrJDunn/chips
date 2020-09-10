@@ -15,10 +15,8 @@
 ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
     : AudioProcessorEditor (&p), processor(p), waveView(p)
 {
-	setLookAndFeel(&style);
-
-	Typeface::Ptr myFont = Typeface::createSystemTypefaceFor(BinaryData::PressStart2PvaV7_ttf, BinaryData::PressStart2PvaV7_ttfSize);
-	getLookAndFeel().setDefaultSansSerifTypeface(myFont);
+	LookAndFeel::setDefaultLookAndFeel(&style);
+	LookAndFeel::getDefaultLookAndFeel().setDefaultSansSerifTypefaceName("Consolas");
 
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -26,7 +24,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 
 	// Waveform
 	addAndMakeVisible(cWaveform);
-	cWaveform.addItemList(StringArray{"Square","Atonal Beep","Sine","Triangle","Saw","Noise"}, 1);
+	cWaveform.addItemList(StringArray{"square","atonal beep","sine","triangle","saw","noise"}, 1);
 	cWaveform.onChange = [this]
 	{
 		processor.setWaveform(cWaveform.getSelectedId());
@@ -136,27 +134,27 @@ void ChipsAudioProcessorEditor::resized()
 	auto rightColumn = parameterDisplayArea.removeFromRight(area.getWidth() / 2);
 	auto leftColumn = parameterDisplayArea;
 
-	auto volumeArea = leftColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
+	auto volumeArea = leftColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(1);
 	lVolume.setBounds(volumeArea.removeFromLeft(SizeValues::LABEL_WIDTH));
 	sVolume.setBounds(volumeArea.reduced(5));
 
-	auto attackArea = leftColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
+	auto attackArea = leftColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(1);
 	lAttack.setBounds(attackArea.removeFromLeft(SizeValues::LABEL_WIDTH));
 	sAttack.setBounds(attackArea.reduced(5));
 
-	auto decayArea = leftColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
+	auto decayArea = leftColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(1);
 	lDecay.setBounds(decayArea.removeFromLeft(SizeValues::LABEL_WIDTH));
 	sDecay.setBounds(decayArea.reduced(5));
 
-	auto sustainArea = rightColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
+	auto sustainArea = rightColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(1);
 	lSustain.setBounds(sustainArea.removeFromLeft(SizeValues::LABEL_WIDTH));
 	sSustain.setBounds(sustainArea.reduced(5));
 
-	auto releaseArea = rightColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
+	auto releaseArea = rightColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(1);
 	lRelease.setBounds(releaseArea.removeFromLeft(SizeValues::LABEL_WIDTH));
 	sRelease.setBounds(releaseArea.reduced(5));
 
-	auto pulseWidthArea = rightColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(2);
+	auto pulseWidthArea = rightColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(1);
 	lPulseWidth.setBounds(pulseWidthArea.removeFromLeft(SizeValues::LABEL_WIDTH));
 	sPulseWidth.setBounds(pulseWidthArea.reduced(5));
 

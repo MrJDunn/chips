@@ -107,11 +107,4 @@ public:
 		setColour(PopupMenu::ColourIds::textColourId, colours.getText());
 	}
 
-	Typeface::Ptr getTypefaceForFont(const Font& f) override
-	{
-		static Typeface::Ptr myFont = Typeface::createSystemTypefaceFor(BinaryData::PressStart2PvaV7_ttf, BinaryData::PressStart2PvaV7_ttfSize);
-		setDefaultSansSerifTypeface(myFont);
-		return myFont;
-	}
-
 };
