@@ -176,7 +176,7 @@ private:
 			Note newNote;
 			newNote.state = Note::A;
 			newNote.midiValue = note;
-
+			newNote.lastAmplitude = 0.0;
 			notes[note] = newNote;
 		}
 		void remove(int8 note)

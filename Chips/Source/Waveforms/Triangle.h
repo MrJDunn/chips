@@ -27,6 +27,5 @@ protected:
 	void updateNoteAngleDelta(Note& note);
 	void fillBuffer(Note& note, float* writePointer) override;
 
-	double lastAmplitude = 0.0;
 	bool rising = false;
 };

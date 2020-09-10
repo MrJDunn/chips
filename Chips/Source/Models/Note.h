@@ -19,6 +19,7 @@ struct Note
 	double angleDelta = 0.0;
 	double currentAngle = 0.0;
 	double pulseWidth = 0.0;
+	double lastAmplitude = 0.0;
 
 	enum NoteState
 	{

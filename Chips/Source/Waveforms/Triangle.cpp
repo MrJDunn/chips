@@ -33,22 +33,30 @@ void Triangle::fillBuffer(Note& note, float* writePointer)
 	double sampleToAdd = 0.0;
 	if (rising)
 	{
-		if (lastAmplitude - note.angleDelta < abs(note.amplitude / 4.0) * -1)
+		if (note.lastAmplitude - note.angleDelta < abs(note.amplitude / 4.0) * -1)
 		{
 			rising = !rising;
+			sampleToAdd = abs(note.amplitude / 4.0) * -1;
 		}
-		sampleToAdd = lastAmplitude - note.angleDelta;
+		else
+		{
+			sampleToAdd = note.lastAmplitude - note.angleDelta;
+		}
 	}
 	else
 	{
-		if (lastAmplitude + note.angleDelta > abs(note.amplitude / 4.0))
+		if (note.lastAmplitude + note.angleDelta > abs(note.amplitude / 4.0))
 		{
 			rising = !rising;
+			sampleToAdd = abs(note.amplitude / 4.0);
 		}
-		sampleToAdd = lastAmplitude + note.angleDelta;
+		else
+		{
+			sampleToAdd = note.lastAmplitude + note.angleDelta;
+		}
 	}
 
-	lastAmplitude = sampleToAdd;
+	note.lastAmplitude = sampleToAdd;
 
 	*writePointer += sampleToAdd;
 	note.currentAngle = note.angleDelta;
