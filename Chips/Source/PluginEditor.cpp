@@ -32,6 +32,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 
 	// Volume
 	initialiseSlider(&sVolume);
+	sVolume.setSliderStyle(Slider::SliderStyle::LinearBar);
 	sVolume.onValueChange = [this] 
 	{
 		processor.setAmplitude(sVolume.getValue());
@@ -44,6 +45,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 
 	// Attack
 	initialiseSlider(&sAttack);
+	sAttack.setSliderStyle(Slider::SliderStyle::LinearBar);
 	sAttack.onValueChange = [this]
 	{
 		processor.setAttack(sAttack.getValue());
@@ -56,6 +58,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 
 	// Decay
 	initialiseSlider(&sDecay);
+	sDecay.setSliderStyle(Slider::SliderStyle::LinearBar);
 	sDecay.onValueChange = [this]
 	{
 		processor.setDecay(sDecay.getValue());
@@ -68,6 +71,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 
 	// Sustain
 	initialiseSlider(&sSustain);
+	sSustain.setSliderStyle(Slider::SliderStyle::LinearBar);
 	sSustain.onValueChange = [this]
 	{
 		processor.setSustain(sSustain.getValue());
@@ -80,6 +84,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 
 	// Release
 	initialiseSlider(&sRelease);
+	sRelease.setSliderStyle(Slider::SliderStyle::LinearBar);
 	sRelease.onValueChange = [this]
 	{
 		processor.setRelease(sRelease.getValue());
@@ -92,6 +97,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 
 	// Pulse Width
 	initialiseSlider(&sPulseWidth);
+	sPulseWidth.setSliderStyle(Slider::SliderStyle::LinearBar);
 	sPulseWidth.onValueChange = [this]
 	{
 		processor.setPulseWidth(sPulseWidth.getValue());

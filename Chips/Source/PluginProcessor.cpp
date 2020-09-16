@@ -314,19 +314,19 @@ void ChipsAudioProcessor::setWaveform(int newWaveform)
 
 void ChipsAudioProcessor::setAmplitude(int value)
 {
-	envelope.amplitude = value / 100.1f;
+	envelope.amplitude = value / 50.1f;
 	state.setProperty(amplitudeIdentifier, value, nullptr);
 }
 
 void ChipsAudioProcessor::setAttack(int value)
 {
-	envelope.attack = value / 500.1f;
+	envelope.attack = abs(0.4 - value / 259.99f);
 	state.setProperty(attackIdentifier, value, nullptr);
 }
 
 void ChipsAudioProcessor::setDecay(int value)
 {
-	envelope.decay = value / 500.1f;
+	envelope.decay = abs(0.4 - value / 259.99f);
 	state.setProperty(decayIdentifier, value, nullptr);
 }
 
@@ -338,7 +338,7 @@ void ChipsAudioProcessor::setSustain(int value)
 
 void ChipsAudioProcessor::setRelease(int value)
 {
-	envelope.release = value / 500.1f;
+	envelope.release = abs(0.4 - value / 259.99f);
 	state.setProperty(releaseIdentifier, value, nullptr);
 }
 
