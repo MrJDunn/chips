@@ -20,7 +20,7 @@ struct Note
 	double currentAngle = 0.0;
 	double pulseWidth = 0.0;
 	double lastAmplitude = 0.0;
-
+	bool rising = true;
 	enum NoteState
 	{
 		Off = 0,

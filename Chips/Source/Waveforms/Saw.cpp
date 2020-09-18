@@ -54,6 +54,7 @@ void Saw::fillBuffer(Note& note, float* writePointer)
 	}
 
 	note.lastAmplitude = sampleToAdd;
+
 	*writePointer += sampleToAdd;
 	note.currentAngle = note.angleDelta;
 }

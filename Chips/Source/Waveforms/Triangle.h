@@ -26,6 +26,4 @@ public:
 protected:
 	void updateNoteAngleDelta(Note& note);
 	void fillBuffer(Note& note, float* writePointer) override;
-
-	bool rising = false;
 };
