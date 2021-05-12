@@ -86,38 +86,24 @@ public:
 	int getPulseWidth();
 
 	//==============================================================================
-	// UI hooks
+	// Persists the buffer so that the UI can access a copy of it periodically
 	struct BufferHelper
 	{
-		void giveMeBufferStuff(std::vector<float>& bufferToFill)
+		void loadBuffer(std::vector<float>& bufferToFill)
 		{
-			//ScopedLock lock(section);
-
 			size_t size = lastBuffer.size();
 			bufferToFill.resize(size);
-
-			for (int i = 0; i < size; i++)
-			{
-				jassert(i < lastBuffer.size());
-				bufferToFill[i] = lastBuffer.at(i);
-			}
+			std::copy(lastBuffer.begin(), lastBuffer.end(), std::back_inserter(bufferToFill));
 		}
 
 		void clearBuffer(size_t numSamples)
 		{
 			lastBuffer.resize(numSamples);
-
-			for (int i = 0; i < numSamples; i++)
-			{
-				jassert(i < numSamples);
-				lastBuffer[i] = 0;
-			}	
+			std::fill(lastBuffer.begin(), lastBuffer.end(), 0);
 		}
 
 		void saveBuffer(AudioBuffer<float>& bufferRef)
 		{
-			//ScopedLock lock(section);
-
 			auto numChannels = bufferRef.getNumChannels();
 			auto numSamples = bufferRef.getNumSamples();
 
@@ -128,7 +114,6 @@ public:
 				for (int channel = 0; channel < numChannels; channel++)
 				{
 					auto readPtr = bufferRef.getReadPointer(channel);
-					jassert(i < numSamples);
 					lastBuffer[i] += readPtr[i];
 				}
 			}
@@ -149,6 +134,7 @@ private:
 	Identifier releaseIdentifier;
 	Identifier pulseWidthIdentifier;
 
+	// Tracks attack, decay, sustain and release amplitude of a wave
 	struct Envelope
 	{
 		float wave = 1.0f;
@@ -163,6 +149,7 @@ private:
 	//==============================================================================
 	void calculateMagintude(Note*);
 
+	// Maintains a map of active and inactive midi notes
 	struct NoteTracker
 	{
 	public:

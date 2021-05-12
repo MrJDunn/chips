@@ -30,7 +30,7 @@ void WaveformView::resized()
 
 void WaveformView::timerCallback()
 {
-	processor.bufferHelper.giveMeBufferStuff(buffer);
+	processor.bufferHelper.loadBuffer(buffer);
 	repaint();
 }
 
