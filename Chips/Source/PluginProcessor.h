@@ -134,12 +134,11 @@ public:
 			}
 		}
 		std::vector<float> lastBuffer;
-		CriticalSection section;
 	} bufferHelper;
 
 private:
 
-	WaveBase* wave;
+	std::unique_ptr<WaveBase> wave;
 	ValueTree state;
 
 	Identifier waveIdentifier;

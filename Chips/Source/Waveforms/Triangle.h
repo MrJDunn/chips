@@ -24,6 +24,12 @@ public:
 	Triangle();
 	~Triangle() override;
 protected:
+
+	/**
+	 * Calculates the required gradient for the given note's frequency and amplitude
+	 * @param note	The note to calculate a gradient for
+	 * 
+	 */
 	void updateNoteAngleDelta(Note& note);
 	void fillBuffer(Note& note, float* writePointer) override;
 };

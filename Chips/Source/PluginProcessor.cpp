@@ -33,13 +33,10 @@ ChipsAudioProcessor::ChipsAudioProcessor():
 	state.setProperty(sustainPathsIdentifier, 50.0f, nullptr);
 	state.setProperty(releaseIdentifier, 50.0f, nullptr);
 	state.setProperty(pulseWidthIdentifier, 0.0f, nullptr);
-
-	wave = nullptr;
 }
 
 ChipsAudioProcessor::~ChipsAudioProcessor()
 {
-	delete wave;
 }
 
 //==============================================================================
@@ -153,21 +150,8 @@ void ChipsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
-    for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
+	for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
-
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
 
 	buffer.clear();
 
@@ -183,9 +167,6 @@ void ChipsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
 		{
 			noteTracker.remove(m.getNoteNumber());
 		}
-		// play a sound for each note held!
-		// https://docs.juce.com/master/tutorial_mpe_introduction.html
-		// https://docs.juce.com/master/tutorial_synth_using_midi_input.html
 	}
 
 	if (wave)
@@ -195,11 +176,9 @@ void ChipsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
 		{
 			calculateMagintude(&noteTracker[i]);
 
-			if (noteTracker[i].state != Note::Off)// || i == 64)
+			if (noteTracker[i].state != Note::Off)
 			{
 				noteTracker[i].pulseWidth = envelope.pulseWidth;
-
-				//wave->reset(buffer);
 				wave->perform(noteTracker[i], buffer);
 			}
 		}
@@ -268,38 +247,32 @@ void ChipsAudioProcessor::setWaveform(int newWaveform)
 	{
 	case 1:
 	{
-		delete wave;
-		wave = new Square();
+		wave = std::make_unique<Square>();
 		break;
 	}
 	case 2:
 	{
-		delete wave;
-		wave = new AtonalBeep();
+		wave = std::make_unique<AtonalBeep>();
 		break;
 	}
 	case 3:
 	{
-		delete wave;
-		wave = new Sine();
+		wave = std::make_unique<Sine>();
 		break;
 	}
 	case 4:
 	{
-		delete wave;
-		wave = new Triangle();
+		wave = std::make_unique<Triangle>();
 		break;
 	}
 	case 5:
 	{
-		delete wave;
-		wave = new Saw();
+		wave = std::make_unique<Saw>();
 		break;
 	}
 	case 6:
 	{
-		delete wave;
-		wave = new Noise();
+		wave = std::make_unique<Noise>();
 		break;
 	}
 	default:

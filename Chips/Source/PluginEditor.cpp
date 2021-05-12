@@ -18,9 +18,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	LookAndFeel::setDefaultLookAndFeel(&style);
 	LookAndFeel::getDefaultLookAndFeel().setDefaultSansSerifTypefaceName("Consolas");
 
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
-    setSize (400, 300);
+	setSize (400, 300);
 
 	// Waveform
 	addAndMakeVisible(cWaveform);

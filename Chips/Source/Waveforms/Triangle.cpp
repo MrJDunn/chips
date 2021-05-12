@@ -31,6 +31,7 @@ void Triangle::fillBuffer(Note& note, float* writePointer)
 {
 	updateNoteAngleDelta(note);
 	double sampleToAdd = 0.0;
+
 	if (note.rising)
 	{
 		if (note.lastAmplitude - note.angleDelta < abs(note.amplitude / 2.0) * -1)

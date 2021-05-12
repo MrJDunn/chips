@@ -34,7 +34,6 @@ void Saw::updateNoteAngleDelta(Note& note)
  	 |     \|     \|     \|     \
     x[n]  -amp
 
-	- Need to figure out how many samples are in a cycle for the given fq spc()
 	- Each sample is then n * / spc(fq)[n]
 
 */
