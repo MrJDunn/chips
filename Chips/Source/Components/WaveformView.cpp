@@ -56,7 +56,7 @@ void WaveformView::paintVerticalLines(Graphics & g)
 			jassert(i < buffer.size());
 
 			thisSample = buffer.at(i) * amplitude + height / 2.0f;
-			g.drawLine({ (float)i / divisor, (float)height / 2.0f,(float)(i + 1.0f) / divisor, thisSample });
+			g.drawLine({(float)i / divisor, (float)height / 2.0f, (float)(i + 1.0f) / divisor, thisSample });
 			lastSample = thisSample;
 		}
 	}

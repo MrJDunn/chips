@@ -93,7 +93,7 @@ public:
 		{
 			size_t size = lastBuffer.size();
 			bufferToFill.resize(size);
-			std::copy(lastBuffer.begin(), lastBuffer.end(), std::back_inserter(bufferToFill));
+			bufferToFill = lastBuffer;
 		}
 
 		void clearBuffer(size_t numSamples)
@@ -107,13 +107,13 @@ public:
 			auto numChannels = bufferRef.getNumChannels();
 			auto numSamples = bufferRef.getNumSamples();
 
-			clearBuffer(numSamples);	
+			clearBuffer(numSamples);
 
-			for (int i = 0; i < numSamples; i++)
+			for (int channel = 0; channel < numChannels; channel++)
 			{
-				for (int channel = 0; channel < numChannels; channel++)
+				auto readPtr = bufferRef.getReadPointer(channel);
+				for (int i = 0; i < numSamples; i++)
 				{
-					auto readPtr = bufferRef.getReadPointer(channel);
 					lastBuffer[i] += readPtr[i];
 				}
 			}
