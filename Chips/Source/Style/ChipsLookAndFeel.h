@@ -121,11 +121,11 @@ public:
 				{
 					g.setColour(slider.findColour(Slider::trackColourId));
 					g.fillRect(slider.isHorizontal() ? Rectangle<float>(static_cast<float>(i - x + 0.1f), y + 0.5f, static_cast<float>(sliderPos - i - 0.2f), height - 1.0f)
-						: Rectangle<float>(x + 0.5f, sliderPos, width - 1.0f, y + (height - sliderPos)));
+						: Rectangle<float>(x + 0.5f, static_cast<float>(i +  0.1f), width - 1.0f, 1.0f));
 
 					g.setColour(slider.findColour(Slider::backgroundColourId));
 					g.drawRect(slider.isHorizontal() ? Rectangle<float>(static_cast<float>(i - x + 0.1f), y + 0.5f, static_cast<float>(sliderPos - i), height - 1.0f)
-						: Rectangle<float>(x + 0.5f, sliderPos, width - 1.0f, y + (height - sliderPos)));
+						: Rectangle<float>(x + 0.5f, static_cast<float>(i + 0.1f), width - 1.0f, 0.1f));
 				}
 			}
 		}

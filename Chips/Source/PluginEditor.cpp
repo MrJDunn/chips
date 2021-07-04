@@ -43,7 +43,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 
 	// Attack
 	initialiseSlider(&sAttack);
-	sAttack.setSliderStyle(Slider::SliderStyle::LinearBar);
+	sAttack.setSliderStyle(Slider::SliderStyle::LinearBarVertical);
 	sAttack.onValueChange = [this]
 	{
 		processor.setAttack(sAttack.getValue());
@@ -51,12 +51,12 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	sAttack.setRange({ 0, 100 }, 1);
 
 	addAndMakeVisible(lAttack);
-	lAttack.attachToComponent(&sAttack, true);
 	lAttack.setText(String(TextValues::ATTACK), dontSendNotification);
+	lAttack.setJustificationType(Justification::centred);
 
 	// Decay
 	initialiseSlider(&sDecay);
-	sDecay.setSliderStyle(Slider::SliderStyle::LinearBar);
+	sDecay.setSliderStyle(Slider::SliderStyle::LinearBarVertical);
 	sDecay.onValueChange = [this]
 	{
 		processor.setDecay(sDecay.getValue());
@@ -64,12 +64,12 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	sDecay.setRange({ 0, 100 }, 1);
 
 	addAndMakeVisible(lDecay);
-	lDecay.attachToComponent(&sDecay, true);
 	lDecay.setText(String(TextValues::DECAY), dontSendNotification);
+	lDecay.setJustificationType(Justification::centred);
 
 	// Sustain
 	initialiseSlider(&sSustain);
-	sSustain.setSliderStyle(Slider::SliderStyle::LinearBar);
+	sSustain.setSliderStyle(Slider::SliderStyle::LinearBarVertical);
 	sSustain.onValueChange = [this]
 	{
 		processor.setSustain(sSustain.getValue());
@@ -77,12 +77,12 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	sSustain.setRange({ 0, 100 }, 1);
 
 	addAndMakeVisible(lSustain);
-	lSustain.attachToComponent(&sSustain, true);
 	lSustain.setText(String(TextValues::SUSTAIN), dontSendNotification);
+	lSustain.setJustificationType(Justification::centred);
 
 	// Release
 	initialiseSlider(&sRelease);
-	sRelease.setSliderStyle(Slider::SliderStyle::LinearBar);
+	sRelease.setSliderStyle(Slider::SliderStyle::LinearBarVertical);
 	sRelease.onValueChange = [this]
 	{
 		processor.setRelease(sRelease.getValue());
@@ -90,8 +90,8 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	sRelease.setRange({ 0, 100 }, 1);
 
 	addAndMakeVisible(lRelease);
-	lRelease.attachToComponent(&sRelease, true);
 	lRelease.setText(String(TextValues::RELEASE), dontSendNotification);
+	lRelease.setJustificationType(Justification::centred);
 
 	// Pulse Width
 	initialiseSlider(&sPulseWidth);
@@ -142,25 +142,27 @@ void ChipsAudioProcessorEditor::resized()
 	lVolume.setBounds(volumeArea.removeFromLeft(SizeValues::LABEL_WIDTH));
 	sVolume.setBounds(volumeArea.reduced(5));
 
-	auto attackArea = leftColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(1);
-	lAttack.setBounds(attackArea.removeFromLeft(SizeValues::LABEL_WIDTH));
-	sAttack.setBounds(attackArea.reduced(5));
-
-	auto decayArea = leftColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(1);
-	lDecay.setBounds(decayArea.removeFromLeft(SizeValues::LABEL_WIDTH));
-	sDecay.setBounds(decayArea.reduced(5));
-
-	auto sustainArea = rightColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(1);
-	lSustain.setBounds(sustainArea.removeFromLeft(SizeValues::LABEL_WIDTH));
-	sSustain.setBounds(sustainArea.reduced(5));
-
-	auto releaseArea = rightColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(1);
-	lRelease.setBounds(releaseArea.removeFromLeft(SizeValues::LABEL_WIDTH));
-	sRelease.setBounds(releaseArea.reduced(5));
-
-	auto pulseWidthArea = rightColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(1);
+	auto pulseWidthArea = leftColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(1);
 	lPulseWidth.setBounds(pulseWidthArea.removeFromLeft(SizeValues::LABEL_WIDTH));
 	sPulseWidth.setBounds(pulseWidthArea.reduced(5));
+
+	//Put in the pitch control here
+
+	auto attackArea = rightColumn.removeFromLeft(SizeValues::SLIDER_HEIGHT).reduced(1);
+	sAttack.setBounds(attackArea.removeFromTop(attackArea.getHeight() - SizeValues::SLIDER_HEIGHT).reduced(5));
+	lAttack.setBounds(attackArea);
+
+	auto decayArea = rightColumn.removeFromLeft(SizeValues::SLIDER_HEIGHT).reduced(1);
+	sDecay.setBounds(decayArea.removeFromTop(decayArea.getHeight() - SizeValues::SLIDER_HEIGHT).reduced(5));
+	lDecay.setBounds(decayArea);
+
+	auto sustainArea = rightColumn.removeFromLeft(SizeValues::SLIDER_HEIGHT).reduced(1);
+	sSustain.setBounds(sustainArea.removeFromTop(sustainArea.getHeight() - SizeValues::SLIDER_HEIGHT).reduced(5));
+	lSustain.setBounds(sustainArea);
+
+	auto releaseArea = rightColumn.removeFromLeft(SizeValues::SLIDER_HEIGHT).reduced(1);
+	sRelease.setBounds(releaseArea.removeFromTop(releaseArea.getHeight() - SizeValues::SLIDER_HEIGHT).reduced(5));
+	lRelease.setBounds(releaseArea);
 
 	waveView.setBounds(area.reduced(10));
 }
