@@ -115,18 +115,28 @@ public:
 	{
 		if (slider.isBar())
 		{
-			for (int i = 0; i < sliderPos; i++)
+			if (slider.isHorizontal())
 			{
-				if (i % 2 == 0)
+				for (int i = 0; i < sliderPos; i++)
 				{
-					g.setColour(slider.findColour(Slider::trackColourId));
-					g.fillRect(slider.isHorizontal() ? Rectangle<float>(static_cast<float>(i - x + 0.1f), y + 0.5f, static_cast<float>(sliderPos - i - 0.2f), height - 1.0f)
-						: Rectangle<float>(x + 0.5f, static_cast<float>(sliderPos + i), width - 1.0f, 1.0f));
-
-					g.setColour(slider.findColour(Slider::backgroundColourId));
-					g.drawRect(slider.isHorizontal() ? Rectangle<float>(static_cast<float>(i - x + 0.1f), y + 0.5f, static_cast<float>(sliderPos - i), height - 1.0f)
-						: Rectangle<float>(x + 0.5f, static_cast<float>(sliderPos + i), width - 1.0f, 0.1f));
+					if (i % 2 == 0)
+					{
+						g.setColour(slider.findColour(Slider::trackColourId));
+						g.fillRect(Rectangle<float>(i + x - 1.0f, y + 0.5f, 1.0f, height - 1.0f));
+					}
 				}
+			}
+			else
+			{
+				for (int i = sliderPos; i < slider.getMaximum(); i++)
+				{
+					if (i % 2 == 0)
+					{
+						g.setColour(slider.findColour(Slider::trackColourId));
+						g.fillRect(Rectangle<float>(x + 0.5f, i, width - 1.0f, 1.0f));
+					}
+				}
+
 			}
 		}
 		else

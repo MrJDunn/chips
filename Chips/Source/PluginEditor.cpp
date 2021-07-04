@@ -34,6 +34,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	sVolume.onValueChange = [this] 
 	{
 		processor.setAmplitude(sVolume.getValue());
+		DBG("vol: " + String(sVolume.getValue()));
 	};
 	sVolume.setRange({ 0, 100 }, 1);
 
@@ -47,6 +48,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	sAttack.onValueChange = [this]
 	{
 		processor.setAttack(sAttack.getValue());
+		DBG("atk: " + String(sAttack.getValue()));
 	};
 	sAttack.setRange({ 0, 100 }, 1);
 
@@ -60,6 +62,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	sDecay.onValueChange = [this]
 	{
 		processor.setDecay(sDecay.getValue());
+		DBG("dcy: " + String(sDecay.getValue()));
 	};
 	sDecay.setRange({ 0, 100 }, 1);
 
@@ -73,6 +76,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	sSustain.onValueChange = [this]
 	{
 		processor.setSustain(sSustain.getValue());
+		DBG("sus: " + String(sSustain.getValue()));
 	};
 	sSustain.setRange({ 0, 100 }, 1);
 
@@ -86,6 +90,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	sRelease.onValueChange = [this]
 	{
 		processor.setRelease(sRelease.getValue());
+		DBG("rel: " + String(sRelease.getValue()));
 	};
 	sRelease.setRange({ 0, 100 }, 1);
 
@@ -99,6 +104,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	sPulseWidth.onValueChange = [this]
 	{
 		processor.setPulseWidth(sPulseWidth.getValue());
+		DBG("pwm: " + String(sPulseWidth.getValue()));
 	};
 	sPulseWidth.setRange({ -50, 50 }, 1);
 
