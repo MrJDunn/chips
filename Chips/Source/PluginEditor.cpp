@@ -42,6 +42,20 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	lVolume.attachToComponent(&sVolume, true);
 	lVolume.setText(String(TextValues::VOLUME), dontSendNotification);
 
+	// Pitch
+	initialiseSlider(&sPitch);
+	sPitch.setSliderStyle(Slider::SliderStyle::LinearBar);
+	sPitch.onValueChange = [this] 
+	{
+		processor.setPitch(sPitch.getValue());
+		DBG("pch: " + String(sPitch.getValue()));
+	};
+	sPitch.setRange({ 0, 100 }, 1);
+
+	addAndMakeVisible(lPitch);
+	lPitch.attachToComponent(&sPitch, true);
+	lPitch.setText(String(TextValues::PITCH), dontSendNotification);
+
 	// Attack
 	initialiseSlider(&sAttack);
 	sAttack.setSliderStyle(Slider::SliderStyle::LinearBarVertical);
@@ -151,6 +165,10 @@ void ChipsAudioProcessorEditor::resized()
 	auto pulseWidthArea = leftColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(1);
 	lPulseWidth.setBounds(pulseWidthArea.removeFromLeft(SizeValues::LABEL_WIDTH));
 	sPulseWidth.setBounds(pulseWidthArea.reduced(5));
+
+	auto pitchArea = leftColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(1);
+	lPitch.setBounds(pitchArea.removeFromLeft(SizeValues::LABEL_WIDTH));
+	sPitch.setBounds(pitchArea.reduced(5));
 
 	//Put in the pitch control here
 

@@ -75,6 +75,7 @@ public:
 	void setSustain(int);
 	void setRelease(int);
 	void setPulseWidth(int);
+	void setPitch(int);
 
 	int getWaveform();
 	int getAmplitude();
@@ -84,6 +85,7 @@ public:
 	int getSustain();
 	int getRelease();
 	int getPulseWidth();
+	int getPitch();
 
 	//==============================================================================
 	// Persists the buffer so that the UI can access a copy of it periodically
@@ -133,6 +135,7 @@ private:
 	Identifier sustainPathsIdentifier;
 	Identifier releaseIdentifier;
 	Identifier pulseWidthIdentifier;
+	Identifier pitchIdentifier;
 
 	// Tracks attack, decay, sustain and release amplitude of a wave
 	struct Envelope
