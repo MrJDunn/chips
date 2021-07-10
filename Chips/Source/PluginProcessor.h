@@ -22,6 +22,8 @@
 #include "Waveforms/Saw.h"
 #include "Waveforms/Triangle.h"
 
+#include "Processors/PitchShifter.h"
+
 //==============================================================================
 /**
 */
@@ -124,6 +126,8 @@ public:
 	} bufferHelper;
 
 private:
+
+	BitCrush pitchShifter;
 
 	std::unique_ptr<WaveBase> wave;
 	ValueTree state;

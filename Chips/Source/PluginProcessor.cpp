@@ -34,7 +34,7 @@ ChipsAudioProcessor::ChipsAudioProcessor():
 	state.setProperty(sustainPathsIdentifier, 50.0f, nullptr);
 	state.setProperty(releaseIdentifier, 50.0f, nullptr);
 	state.setProperty(pulseWidthIdentifier, 0.0f, nullptr);
-	state.setProperty(pitchIdentifier, 0.0f, nullptr);
+	state.setProperty(pitchIdentifier, 1.0f, nullptr);
 }
 
 ChipsAudioProcessor::~ChipsAudioProcessor()
@@ -114,6 +114,8 @@ void ChipsAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 	message << "      sampleRate: " << sampleRate << "\n";
 	message << " samplesPerBlock: " << samplesPerBlock << "\n";
 	Logger::getCurrentLogger()->writeToLog(message);
+
+	pitchShifter.prepareToPlay(sampleRate, samplesPerBlock);
 }
 
 void ChipsAudioProcessor::releaseResources()
@@ -185,6 +187,8 @@ void ChipsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
 			}
 		}
 	}
+
+	pitchShifter.processBlock(buffer, midiMessages);
 	bufferHelper.saveBuffer(buffer);
 }
 
@@ -326,7 +330,8 @@ void ChipsAudioProcessor::setPulseWidth(int value)
 void ChipsAudioProcessor::setPitch(int value)
 {
 	//TODO Update some kind of envelope or subprocessor state for pitch control
-	state.setProperty(pitchIdentifier, value, nullptr);
+	pitchShifter.setFactor(value + 1);
+	state.setProperty(pitchIdentifier, value + 1, nullptr);
 }
 
 int ChipsAudioProcessor::getWaveform()
