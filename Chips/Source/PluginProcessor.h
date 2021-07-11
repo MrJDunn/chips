@@ -128,6 +128,12 @@ public:
 private:
 
 	BitCrush pitchShifter;
+	enum PitchModMode 
+	{
+		OFF = 0,
+		ASC,
+		DSC
+	} pitchModMode = PitchModMode::OFF;
 
 	std::unique_ptr<WaveBase> wave;
 	ValueTree state;
@@ -147,7 +153,7 @@ private:
 		float wave = 1.0f;
 		float amplitude = 50.0f;
 		float attack = 50.0f;		// the duration taken to achieve the volume
-		float decay = 50.0f;			// time taken to fallof after sustain period
+		float decay = 50.0f;		// time taken to fallof after sustain period
 		float sustain = 50.0f;		// the duration of the sustain
 		float release = 50.0f;		// the duration taken to reach 0 after release
 		float pulseWidth = 0.0f;

@@ -381,6 +381,17 @@ void ChipsAudioProcessor::calculateMagintude(Note* note)
 	case Note::Off: break;
 	case Note::A:
 	{
+		switch(pitchModMode)
+		{
+		case OFF:
+			break;
+		case ASC:
+			pitchShifter.setFactor(100);
+			break;
+		case DSC:
+			pitchShifter.setFactor(1);
+			break;
+		}
 		note->smoothingFactor *= 10.01;
 		if (note->amplitude + envelope.attack < envelope.amplitude)
 		{
@@ -408,7 +419,21 @@ void ChipsAudioProcessor::calculateMagintude(Note* note)
 	};
 	case Note::S: break;
 	case Note::R:
-	{
+	{	
+		switch(pitchModMode)
+		{
+		case OFF:
+			break;
+		case ASC:
+			if(pitchShifter.getFactor() > 1)
+				pitchShifter.setFactor(pitchShifter.getFactor() - 1);
+			break;
+		case DSC:	
+			if(pitchShifter.getFactor() < 100)
+				pitchShifter.setFactor(pitchShifter.getFactor() + 1);
+			break;
+		}
+
 		note->smoothingFactor *= 0.01;
 
 		if (note->amplitude - envelope.release > 0.0f)
