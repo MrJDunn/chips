@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="cFxdiW" name="Chips" projectType="audioplug" jucerVersion="5.4.3"
-              pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
+<JUCERPROJECT id="cFxdiW" name="Chips" projectType="audioplug" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
               bundleIdentifier="com.audimancy.chips" version="1.0.0" companyName="Audimancy"
               pluginName="Chips" pluginDesc="Chips" pluginManufacturer="Audimancy"
-              pluginManufacturerCode="AmcY" pluginCode="Ch|p">
+              pluginManufacturerCode="AmcY" pluginCode="Ch|p" displaySplashScreen="1"
+              jucerFormatVersion="1">
   <MAINGROUP id="ffMzSM" name="Chips">
     <GROUP id="{0D49C7E3-B330-A4B4-D6C1-F5862CD3E2B0}" name="Source">
+      <GROUP id="{44AF01B3-1861-1DB4-7376-9EDEF1C99D5B}" name="Processors">
+        <FILE id="PJ2ckF" name="PitchShifter.cpp" compile="1" resource="0"
+              file="Source/Processors/PitchShifter.cpp"/>
+        <FILE id="AzBRw4" name="PitchShifter.h" compile="0" resource="0" file="Source/Processors/PitchShifter.h"/>
+      </GROUP>
       <GROUP id="{F1E2888C-ABBB-8657-591D-414A142A7BF0}" name="Style">
         <FILE id="aDipKn" name="ChipsLookAndFeel.h" compile="0" resource="0"
               file="Source/Style/ChipsLookAndFeel.h"/>

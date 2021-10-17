@@ -332,7 +332,7 @@ void ChipsAudioProcessor::setPulseWidth(int value)
 void ChipsAudioProcessor::setPitch(int value)
 {
 	//TODO Update some kind of envelope or subprocessor state for pitch control
-	pitchShifter.setFactor(value);
+	pitchShifter.setFactor(value + 1);
 	state.setProperty(pitchIdentifier, value, nullptr);
 }
 
