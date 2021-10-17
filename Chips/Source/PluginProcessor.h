@@ -22,6 +22,8 @@
 #include "Waveforms/Saw.h"
 #include "Waveforms/Triangle.h"
 
+#include "Processors/PitchShifter.h"
+
 //==============================================================================
 /**
 */
@@ -75,6 +77,7 @@ public:
 	void setSustain(int);
 	void setRelease(int);
 	void setPulseWidth(int);
+	void setPitch(int);
 
 	int getWaveform();
 	int getAmplitude();
@@ -84,6 +87,7 @@ public:
 	int getSustain();
 	int getRelease();
 	int getPulseWidth();
+	int getPitch();
 
 	//==============================================================================
 	// Persists the buffer so that the UI can access a copy of it periodically
@@ -93,7 +97,7 @@ public:
 		{
 			size_t size = lastBuffer.size();
 			bufferToFill.resize(size);
-			std::copy(lastBuffer.begin(), lastBuffer.end(), std::back_inserter(bufferToFill));
+			bufferToFill = lastBuffer;
 		}
 
 		void clearBuffer(size_t numSamples)
@@ -107,13 +111,13 @@ public:
 			auto numChannels = bufferRef.getNumChannels();
 			auto numSamples = bufferRef.getNumSamples();
 
-			clearBuffer(numSamples);	
+			clearBuffer(numSamples);
 
-			for (int i = 0; i < numSamples; i++)
+			for (int channel = 0; channel < numChannels; channel++)
 			{
-				for (int channel = 0; channel < numChannels; channel++)
+				auto readPtr = bufferRef.getReadPointer(channel);
+				for (int i = 0; i < numSamples; i++)
 				{
-					auto readPtr = bufferRef.getReadPointer(channel);
 					lastBuffer[i] += readPtr[i];
 				}
 			}
@@ -122,6 +126,14 @@ public:
 	} bufferHelper;
 
 private:
+
+	BitCrush pitchShifter;
+	enum PitchModMode 
+	{
+		OFF = 0,
+		ASC,
+		DSC
+	} pitchModMode = PitchModMode::OFF;
 
 	std::unique_ptr<WaveBase> wave;
 	ValueTree state;
@@ -133,6 +145,7 @@ private:
 	Identifier sustainPathsIdentifier;
 	Identifier releaseIdentifier;
 	Identifier pulseWidthIdentifier;
+	Identifier pitchIdentifier;
 
 	// Tracks attack, decay, sustain and release amplitude of a wave
 	struct Envelope
@@ -140,7 +153,7 @@ private:
 		float wave = 1.0f;
 		float amplitude = 50.0f;
 		float attack = 50.0f;		// the duration taken to achieve the volume
-		float decay = 50.0f;			// time taken to fallof after sustain period
+		float decay = 50.0f;		// time taken to fallof after sustain period
 		float sustain = 50.0f;		// the duration of the sustain
 		float release = 50.0f;		// the duration taken to reach 0 after release
 		float pulseWidth = 0.0f;
@@ -164,13 +177,20 @@ private:
 			newNote.midiValue = note;
 			newNote.lastAmplitude = 0.0;
 			notes[note] = newNote;
+			++held;
 		}
 		void remove(int8 note)
 		{
 			notes[note].state = Note::R;
+			--held;
+		}
+		int getHeld()
+		{
+			return held;
 		}
 	private:
 		Note notes[128];
+		int held = 0;
 	} noteTracker;
 
     //==============================================================================

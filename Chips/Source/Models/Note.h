@@ -13,7 +13,7 @@
 struct Note
 {
 	int midiValue = 0;
-	double amplitude = 0.005;
+	double amplitude = 0.000;
 	int time = 0;
 	double smoothingFactor = 0.1;
 	double angleDelta = 0.0;

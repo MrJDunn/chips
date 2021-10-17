@@ -24,7 +24,8 @@ ChipsAudioProcessor::ChipsAudioProcessor():
 	decayIdentifier("decay"),
 	sustainPathsIdentifier("sustain"),
 	releaseIdentifier("release"),
-	pulseWidthIdentifier("pulseWidth")
+	pulseWidthIdentifier("pulseWidth"),
+	pitchIdentifier("pitch")
 {
 	state.setProperty(waveIdentifier, 1.0f, nullptr);
 	state.setProperty(amplitudeIdentifier, 50.0f, nullptr);
@@ -33,6 +34,7 @@ ChipsAudioProcessor::ChipsAudioProcessor():
 	state.setProperty(sustainPathsIdentifier, 50.0f, nullptr);
 	state.setProperty(releaseIdentifier, 50.0f, nullptr);
 	state.setProperty(pulseWidthIdentifier, 0.0f, nullptr);
+	state.setProperty(pitchIdentifier, 1.0f, nullptr);
 }
 
 ChipsAudioProcessor::~ChipsAudioProcessor()
@@ -112,6 +114,8 @@ void ChipsAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 	message << "      sampleRate: " << sampleRate << "\n";
 	message << " samplesPerBlock: " << samplesPerBlock << "\n";
 	Logger::getCurrentLogger()->writeToLog(message);
+
+	pitchShifter.prepareToPlay(sampleRate, samplesPerBlock);
 }
 
 void ChipsAudioProcessor::releaseResources()
@@ -183,6 +187,8 @@ void ChipsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
 			}
 		}
 	}
+
+	pitchShifter.processBlock(buffer, midiMessages);
 	bufferHelper.saveBuffer(buffer);
 }
 
@@ -237,6 +243,8 @@ void ChipsAudioProcessor::setStateInformation (const void* data, int sizeInBytes
 			if (state.hasProperty("pulseWidth"))
 				setPulseWidth(state.getProperty("pulseWidth"));
 
+			if (state.hasProperty("pitch"))
+				setPitch(state.getProperty("pitch"));
 		}
 	}
 }
@@ -321,6 +329,13 @@ void ChipsAudioProcessor::setPulseWidth(int value)
 	state.setProperty(pulseWidthIdentifier, value, nullptr);
 }
 
+void ChipsAudioProcessor::setPitch(int value)
+{
+	//TODO Update some kind of envelope or subprocessor state for pitch control
+	pitchShifter.setFactor(value);
+	state.setProperty(pitchIdentifier, value, nullptr);
+}
+
 int ChipsAudioProcessor::getWaveform()
 {
 	return state.getProperty("wave");
@@ -356,6 +371,11 @@ int ChipsAudioProcessor::getPulseWidth()
 	return state.getProperty("pulseWidth");
 }
 
+int ChipsAudioProcessor::getPitch()
+{
+	return state.getProperty("pitch");
+}
+
 void ChipsAudioProcessor::calculateMagintude(Note* note)
 {
 	switch (note->state)
@@ -363,6 +383,17 @@ void ChipsAudioProcessor::calculateMagintude(Note* note)
 	case Note::Off: break;
 	case Note::A:
 	{
+		switch(pitchModMode)
+		{
+		case OFF:
+			break;
+		case ASC:
+			pitchShifter.setFactor(100);
+			break;
+		case DSC:
+			pitchShifter.setFactor(1);
+			break;
+		}
 		note->smoothingFactor *= 10.01;
 		if (note->amplitude + envelope.attack < envelope.amplitude)
 		{
@@ -390,7 +421,21 @@ void ChipsAudioProcessor::calculateMagintude(Note* note)
 	};
 	case Note::S: break;
 	case Note::R:
-	{
+	{	
+		switch(pitchModMode)
+		{
+		case OFF:
+			break;
+		case ASC:
+			if(pitchShifter.getFactor() > 1)
+				pitchShifter.setFactor(pitchShifter.getFactor() - 1);
+			break;
+		case DSC:	
+			if(pitchShifter.getFactor() < 100)
+				pitchShifter.setFactor(pitchShifter.getFactor() + 1);
+			break;
+		}
+
 		note->smoothingFactor *= 0.01;
 
 		if (note->amplitude - envelope.release > 0.0f)
