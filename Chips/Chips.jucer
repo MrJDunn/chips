@@ -4,7 +4,7 @@
               bundleIdentifier="com.audimancy.chips" version="1.0.0" companyName="Audimancy"
               pluginName="Chips" pluginDesc="Chips" pluginManufacturer="Audimancy"
               pluginManufacturerCode="AmcY" pluginCode="Ch|p" displaySplashScreen="1"
-              jucerFormatVersion="1">
+              jucerFormatVersion="1" jucerVersion="5.4.3">
   <MAINGROUP id="ffMzSM" name="Chips">
     <GROUP id="{0D49C7E3-B330-A4B4-D6C1-F5862CD3E2B0}" name="Source">
       <GROUP id="{44AF01B3-1861-1DB4-7376-9EDEF1C99D5B}" name="Processors">
@@ -23,6 +23,8 @@
       </GROUP>
       <GROUP id="{B187A54C-38A6-45E2-44F4-3339707A3AFF}" name="Utility">
         <FILE id="nYhfzs" name="Converter.h" compile="0" resource="0" file="Source/Utility/Converter.h"/>
+        <FILE id="SK5a04" name="FileManager.cpp" compile="1" resource="0" file="Source/Utility/FileManager.cpp"/>
+        <FILE id="gEc7Ru" name="FileManager.h" compile="0" resource="0" file="Source/Utility/FileManager.h"/>
       </GROUP>
       <GROUP id="{F3A763E4-8E8A-CB5A-C1C1-D9DFCA1586A7}" name="Models">
         <FILE id="mCk1WJ" name="Note.cpp" compile="1" resource="0" file="Source/Models/Note.cpp"/>

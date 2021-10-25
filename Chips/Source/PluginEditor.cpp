@@ -27,6 +27,58 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	{
 		processor.setWaveform(cWaveform.getSelectedId());
 	};
+	cWaveform.setSelectedId(processor.getWaveform(), dontSendNotification);
+
+	// Preset
+	addAndMakeVisible(cPreset);
+	StringArray presets = fileManager.getPresets();
+	cPreset.addItem("save...", 1);
+	cPreset.addItemList(presets, 2);
+	cPreset.onChange = [this]
+	{
+		int id = cPreset.getSelectedId();
+		switch (id)
+		{
+			case 1: // Save
+			{
+				AlertWindow saveWindow("save", "save preset", AlertWindow::AlertIconType::NoIcon);
+				saveWindow.getLookAndFeel().setDefaultSansSerifTypefaceName("Consolas");
+				saveWindow.setEscapeKeyCancels(true);
+				saveWindow.addTextEditor("presetName", "", "preset name", false);
+				saveWindow.addButton("save", 1, KeyPress(KeyPress::returnKey));
+
+				int result = saveWindow.runModalLoop();
+
+				if(result == 1) // Enter
+				{
+					String presetName = saveWindow.getTextEditorContents("presetName");
+
+					MemoryBlock block(2048);
+					processor.getStateInformation(block);
+					fileManager.savePresetFile(presetName, block);
+
+					StringArray presets = fileManager.getPresets();
+					if(!presets.contains(presetName))
+						cPreset.addItem(presetName, presets.size() + 1);
+					cPreset.setText(presetName, false);
+				}
+				if(result == 0) // Cancel
+				{
+					cPreset.setSelectedId(0, dontSendNotification);
+					break;
+				}
+			}
+			default: // Load selected preset
+			{
+				String text = cPreset.getText();
+				MemoryBlock block(2048);
+				fileManager.loadPresetFile(text, block);
+				processor.setStateInformation(block.getData(), block.getSize());
+
+				initialiseParameters();
+			}
+		}
+	};
 
 	// Volume
 	initialiseSlider(&sVolume);
@@ -152,7 +204,7 @@ void ChipsAudioProcessorEditor::resized()
 {
 	auto area = getLocalBounds();
 
-	cWaveform.setBounds(area.removeFromTop(SizeValues::SLIDER_HEIGHT));
+	cPreset.setBounds(area.removeFromTop(SizeValues::SLIDER_HEIGHT));
 
 	auto parameterDisplayArea = area.removeFromTop(area.getHeight() / 3);
 	auto rightColumn = parameterDisplayArea.removeFromRight(area.getWidth() / 2);
@@ -188,13 +240,14 @@ void ChipsAudioProcessorEditor::resized()
 	sRelease.setBounds(releaseArea.removeFromTop(releaseArea.getHeight() - SizeValues::SLIDER_HEIGHT).reduced(5));
 	lRelease.setBounds(releaseArea);
 
+	cWaveform.setBounds(rightColumn.reduced(10));
+
 	waveView.setBounds(area.reduced(10));
 }
 
 void ChipsAudioProcessorEditor::initialiseParameters()
 {
 	cWaveform.setSelectedId(processor.getWaveform());
-	sVolume.setValue(processor.getAmplitude());
 	sAttack.setValue(processor.getAttack());
 	sDecay.setValue(processor.getDecay());
 	sSustain.setValue(processor.getSustain());

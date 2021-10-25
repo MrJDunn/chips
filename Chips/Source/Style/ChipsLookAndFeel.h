@@ -84,6 +84,18 @@ public:
 
 	ChipsLookAndFeel()
 	{
+		setColourScheme(ColourScheme
+			{
+			colours.getBackgroundDark(),
+			colours.getBackgroundDark(),
+			colours.getBackgroundDark(),
+			colours.getBorder(),
+			colours.getText(),
+			colours.getBackgroundDark(),
+			colours.getBackgroundDark(),
+			colours.getText(),
+			colours.getText()
+			});
 		setColour(ComboBox::ColourIds::backgroundColourId, colours.getButtonBackground());
 		setColour(ComboBox::ColourIds::outlineColourId, colours.getBorder());
 		setColour(ComboBox::ColourIds::textColourId, colours.getText());
@@ -101,10 +113,28 @@ public:
 
 		setColour(Label::ColourIds::textColourId, colours.getText());
 
+		setColour(AlertWindow::ColourIds::textColourId, colours.getText());
+		setColour(AlertWindow::ColourIds::backgroundColourId, colours.getBackgroundDark());
+		setColour(AlertWindow::ColourIds::outlineColourId, colours.getBorder());
+
+		setColour(TextButton::ColourIds::buttonColourId, colours.getBackgroundDark());
+		setColour(TextButton::ColourIds::buttonOnColourId, colours.getBackgroundDark());
+		setColour(TextButton::ColourIds::textColourOffId, colours.getText());
+		setColour(TextButton::ColourIds::textColourOnId, colours.getText());
+
+		setColour(TextEditor::ColourIds::textColourId, colours.getText());
+		setColour(TextEditor::ColourIds::backgroundColourId, colours.getBackgroundDark());
+		setColour(TextEditor::ColourIds::outlineColourId, colours.getBorder());
+		setColour(TextEditor::ColourIds::highlightColourId, colours.getText());
+		setColour(TextEditor::ColourIds::highlightedTextColourId, colours.getBackgroundDark());
+		setColour(TextEditor::ColourIds::focusedOutlineColourId, colours.getText());
+		setColour(TextEditor::ColourIds::shadowColourId, colours.getBackgroundDark());
+		
 		setColour(PopupMenu::ColourIds::backgroundColourId, colours.getMenuBackground());
 		setColour(PopupMenu::ColourIds::highlightedBackgroundColourId, colours.getHighlight());
 		setColour(PopupMenu::ColourIds::highlightedTextColourId, colours.getTextInverse());
 		setColour(PopupMenu::ColourIds::textColourId, colours.getText());
+
 	}
 
 	void drawLinearSlider(Graphics& g, int x, int y, int width, int height,

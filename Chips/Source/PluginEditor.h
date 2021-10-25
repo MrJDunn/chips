@@ -12,6 +12,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
+#include "Utility/FileManager.h"
 
 #include "Components/WaveformView.h"
 
@@ -35,6 +36,7 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     ChipsAudioProcessor& processor;
+	FileManager fileManager;
 
 	ChipsLookAndFeel style;
 
@@ -56,6 +58,8 @@ private:
 	Label lPitch;
 
 	ComboBox cWaveform;
+	
+	ComboBox cPreset;
 
 	WaveformView waveView;
 
@@ -72,7 +76,7 @@ private:
 
 	struct SizeValues
 	{
-		static constexpr int LABEL_WIDTH = 50;
+		static constexpr int LABEL_WIDTH = 30;
 		static constexpr int SLIDER_HEIGHT = 25;
 	};
 
