@@ -21,5 +21,7 @@ public:
 	void loadPresetFile(String presetName, MemoryBlock& memoryBlock);
 	void savePresetFile(String presetName, MemoryBlock& memoryBlock);
 
+	String getPresetDirectory();
+
 private:
 };

@@ -36,6 +36,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	cPreset.addItemList(presets, 2);
 	cPreset.onChange = [this]
 	{
+		StringArray presets = fileManager.getPresets();
 		int id = cPreset.getSelectedId();
 		switch (id)
 		{
@@ -57,9 +58,8 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 					processor.getStateInformation(block);
 					fileManager.savePresetFile(presetName, block);
 
-					StringArray presets = fileManager.getPresets();
 					if(!presets.contains(presetName))
-						cPreset.addItem(presetName, presets.size() + 1);
+						cPreset.addItem(presetName, presets.size() + 2);
 					cPreset.setText(presetName, false);
 				}
 				if(result == 0) // Cancel
@@ -248,6 +248,7 @@ void ChipsAudioProcessorEditor::resized()
 void ChipsAudioProcessorEditor::initialiseParameters()
 {
 	cWaveform.setSelectedId(processor.getWaveform());
+	sVolume.setValue(processor.getAmplitude());
 	sAttack.setValue(processor.getAttack());
 	sDecay.setValue(processor.getDecay());
 	sSustain.setValue(processor.getSustain());

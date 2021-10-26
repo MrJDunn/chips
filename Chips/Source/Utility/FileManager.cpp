@@ -12,6 +12,11 @@
 
 FileManager::FileManager()
 {
+	File presetDirectory(getPresetDirectory());
+	if(!presetDirectory.exists())
+	{
+		presetDirectory.createDirectory();
+	}
 }
 
 FileManager::~FileManager()
@@ -21,7 +26,7 @@ FileManager::~FileManager()
 StringArray FileManager::getPresets()
 {
 
-	Array<File> files = File::getSpecialLocation(File::SpecialLocationType::commonDocumentsDirectory).findChildFiles(File::TypesOfFileToFind::findFiles, false, "*.chp");
+	Array<File> files = File(getPresetDirectory()).findChildFiles(File::TypesOfFileToFind::findFiles, false, "*.chp");
 	StringArray presets;
 	for(File file : files)
 	{
@@ -34,14 +39,19 @@ StringArray FileManager::getPresets()
 
 void FileManager::savePresetFile(String presetName, MemoryBlock& memoryBlock)
 {
-	File newPresetFile(File::getSpecialLocation(File::SpecialLocationType::commonDocumentsDirectory).getFullPathName() + "\\" + presetName + ".chp");
+	File newPresetFile(getPresetDirectory() + "\\" + presetName + ".chp");
 	FileOutputStream fos(newPresetFile);
 	fos.write(memoryBlock.getData(), memoryBlock.getSize());
 }
 
+String FileManager::getPresetDirectory()
+{
+	return File::getSpecialLocation(File::SpecialLocationType::commonDocumentsDirectory).getFullPathName() + "\\Chips";
+}
+
 void FileManager::loadPresetFile(String presetName, MemoryBlock& memoryBlock)
 {
-	 File presetFile(File::getSpecialLocation(File::SpecialLocationType::commonDocumentsDirectory).getFullPathName() + "\\" + presetName + ".chp");
+	 File presetFile(getPresetDirectory() + "\\" + presetName + ".chp");
 	 FileInputStream fis(presetFile);
 	 fis.read(memoryBlock.getData(), memoryBlock.getSize());
 }
