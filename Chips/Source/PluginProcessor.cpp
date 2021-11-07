@@ -25,7 +25,8 @@ ChipsAudioProcessor::ChipsAudioProcessor():
 	sustainPathsIdentifier("sustain"),
 	releaseIdentifier("release"),
 	pulseWidthIdentifier("pulseWidth"),
-	pitchIdentifier("pitch")
+	pitchIdentifier("pitch"),
+	vibratoIdentifier("vibrato")
 {
 	state.setProperty(waveIdentifier, 1.0f, nullptr);
 	state.setProperty(amplitudeIdentifier, 50.0f, nullptr);
@@ -35,6 +36,7 @@ ChipsAudioProcessor::ChipsAudioProcessor():
 	state.setProperty(releaseIdentifier, 50.0f, nullptr);
 	state.setProperty(pulseWidthIdentifier, 0.0f, nullptr);
 	state.setProperty(pitchIdentifier, 1.0f, nullptr);
+	state.setProperty(vibratoIdentifier, 50.0f, nullptr);
 }
 
 ChipsAudioProcessor::~ChipsAudioProcessor()
@@ -116,6 +118,7 @@ void ChipsAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 	Logger::getCurrentLogger()->writeToLog(message);
 
 	pitchShifter.prepareToPlay(sampleRate, samplesPerBlock);
+	vibrato.prepareToPlay(sampleRate, samplesPerBlock);
 }
 
 void ChipsAudioProcessor::releaseResources()
@@ -189,6 +192,8 @@ void ChipsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& 
 	}
 
 	pitchShifter.processBlock(buffer, midiMessages);
+	vibrato.processBlock(buffer, midiMessages);
+
 	bufferHelper.saveBuffer(buffer);
 }
 
@@ -245,6 +250,10 @@ void ChipsAudioProcessor::setStateInformation (const void* data, int sizeInBytes
 
 			if (state.hasProperty("pitch"))
 				setPitch(state.getProperty("pitch"));
+	
+			if (state.hasProperty("vibrato"))
+				setVibrato(state.getProperty("vibrato"));
+
 		}
 	}
 }
@@ -331,9 +340,14 @@ void ChipsAudioProcessor::setPulseWidth(int value)
 
 void ChipsAudioProcessor::setPitch(int value)
 {
-	//TODO Update some kind of envelope or subprocessor state for pitch control
 	pitchShifter.setFactor(value + 1);
 	state.setProperty(pitchIdentifier, value, nullptr);
+}
+
+void ChipsAudioProcessor::setVibrato(int value)
+{	
+	//TODO set vibrato value
+	state.setProperty(vibratoIdentifier, value, nullptr);
 }
 
 int ChipsAudioProcessor::getWaveform()
@@ -374,6 +388,11 @@ int ChipsAudioProcessor::getPulseWidth()
 int ChipsAudioProcessor::getPitch()
 {
 	return state.getProperty("pitch");
+}
+
+int ChipsAudioProcessor::getVibrato()
+{
+	return state.getProperty("vibrato");
 }
 
 void ChipsAudioProcessor::calculateMagintude(Note* note)

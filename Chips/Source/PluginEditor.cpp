@@ -18,7 +18,7 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	LookAndFeel::setDefaultLookAndFeel(&style);
 	LookAndFeel::getDefaultLookAndFeel().setDefaultSansSerifTypefaceName("Consolas");
 
-	setSize (400, 300);
+	setSize (400, 350);
 
 	// Waveform
 	addAndMakeVisible(cWaveform);
@@ -178,6 +178,20 @@ ChipsAudioProcessorEditor::ChipsAudioProcessorEditor (ChipsAudioProcessor& p)
 	lPulseWidth.attachToComponent(&sPulseWidth, true);
 	lPulseWidth.setText(String(TextValues::PULSE_WIDTH), dontSendNotification);
 
+	// Vibrato
+	initialiseSlider(&sVibrato);
+	sVibrato.setSliderStyle(Slider::SliderStyle::LinearBar);
+	sVibrato.onValueChange = [this]
+	{
+		processor.setVibrato(sVibrato.getValue());
+		DBG("vib: " + String(sVibrato.getValue()));
+	};
+	sVibrato.setRange({ -50, 50 }, 1);
+
+	addAndMakeVisible(lVibrato);
+	lVibrato.attachToComponent(&sVibrato, true);
+	lVibrato.setText(String(TextValues::VIBRATO), dontSendNotification);
+
 	// Wave view
 	addAndMakeVisible(waveView);
 
@@ -204,11 +218,17 @@ void ChipsAudioProcessorEditor::resized()
 {
 	auto area = getLocalBounds();
 
+	/* Preset selection */
+
 	cPreset.setBounds(area.removeFromTop(SizeValues::SLIDER_HEIGHT));
+
+	/* Sections */
 
 	auto parameterDisplayArea = area.removeFromTop(area.getHeight() / 3);
 	auto rightColumn = parameterDisplayArea.removeFromRight(area.getWidth() / 2);
 	auto leftColumn = parameterDisplayArea;
+
+	/* Effects */
 
 	auto volumeArea = leftColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(1);
 	lVolume.setBounds(volumeArea.removeFromLeft(SizeValues::LABEL_WIDTH));
@@ -221,8 +241,12 @@ void ChipsAudioProcessorEditor::resized()
 	auto pitchArea = leftColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(1);
 	lPitch.setBounds(pitchArea.removeFromLeft(SizeValues::LABEL_WIDTH));
 	sPitch.setBounds(pitchArea.reduced(5));
+	
+	auto vibratoArea = leftColumn.removeFromTop(SizeValues::SLIDER_HEIGHT).reduced(1);
+	lVibrato.setBounds(vibratoArea.removeFromLeft(SizeValues::LABEL_WIDTH));
+	sVibrato.setBounds(vibratoArea.reduced(5));
 
-	//Put in the pitch control here
+	/* ADSR */
 
 	auto attackArea = rightColumn.removeFromLeft(SizeValues::SLIDER_HEIGHT).reduced(1);
 	sAttack.setBounds(attackArea.removeFromTop(attackArea.getHeight() - SizeValues::SLIDER_HEIGHT).reduced(5));
@@ -240,6 +264,8 @@ void ChipsAudioProcessorEditor::resized()
 	sRelease.setBounds(releaseArea.removeFromTop(releaseArea.getHeight() - SizeValues::SLIDER_HEIGHT).reduced(5));
 	lRelease.setBounds(releaseArea);
 
+	/* Waveform display */
+
 	cWaveform.setBounds(rightColumn.reduced(10));
 
 	waveView.setBounds(area.reduced(10));
@@ -255,6 +281,7 @@ void ChipsAudioProcessorEditor::initialiseParameters()
 	sRelease.setValue(processor.getRelease());
 	sPulseWidth.setValue(processor.getPulseWidth());
 	sPitch.setValue(processor.getPitch());
+	sVibrato.setValue(processor.getVibrato());
 }
 
 void ChipsAudioProcessorEditor::initialiseSlider(Slider* slider)

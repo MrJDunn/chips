@@ -23,6 +23,7 @@
 #include "Waveforms/Triangle.h"
 
 #include "Processors/PitchShifter.h"
+#include "Processors/Vibrato.h"
 
 //==============================================================================
 /**
@@ -78,6 +79,7 @@ public:
 	void setRelease(int);
 	void setPulseWidth(int);
 	void setPitch(int);
+	void setVibrato(int);
 
 	int getWaveform();
 	int getAmplitude();
@@ -88,6 +90,7 @@ public:
 	int getRelease();
 	int getPulseWidth();
 	int getPitch();
+	int getVibrato();
 
 	//==============================================================================
 	// Persists the buffer so that the UI can access a copy of it periodically
@@ -128,6 +131,8 @@ public:
 private:
 
 	BitCrush pitchShifter;
+	Vibrato vibrato;
+
 	enum PitchModMode 
 	{
 		OFF = 0,
@@ -146,6 +151,7 @@ private:
 	Identifier releaseIdentifier;
 	Identifier pulseWidthIdentifier;
 	Identifier pitchIdentifier;
+	Identifier vibratoIdentifier;
 
 	// Tracks attack, decay, sustain and release amplitude of a wave
 	struct Envelope
@@ -157,6 +163,7 @@ private:
 		float sustain = 50.0f;		// the duration of the sustain
 		float release = 50.0f;		// the duration taken to reach 0 after release
 		float pulseWidth = 0.0f;
+		float lfo = 0.0f;
 	} envelope;
 
 	//==============================================================================

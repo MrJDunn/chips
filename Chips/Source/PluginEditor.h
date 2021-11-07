@@ -48,6 +48,7 @@ private:
 	Slider sRelease;
 	Slider sPulseWidth;
 	Slider sPitch;
+	Slider sVibrato;
 
 	Label lVolume;
 	Label lAttack;
@@ -56,6 +57,7 @@ private:
 	Label lRelease;
 	Label lPulseWidth;
 	Label lPitch;
+	Label lVibrato;
 
 	ComboBox cWaveform;
 	
@@ -72,6 +74,7 @@ private:
 		static constexpr char* RELEASE = "r";
 		static constexpr char* PULSE_WIDTH = "pwm";
 		static constexpr char* PITCH = "pch";
+		static constexpr char* VIBRATO = "vib";
 	};
 
 	struct SizeValues
