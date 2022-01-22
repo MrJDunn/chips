@@ -25,8 +25,9 @@ const String Vibrato::getName() const
 
 void Vibrato::prepareToPlay(double sampleRate, int maximumExpectedSamplesPerBlock)
 {
-	float delayInSeconds = 0.5;
-	writePos = (int)(delayInSeconds * sampleRate);
+	lastSampleRate = sampleRate;
+	writePosL = (int)(delayInSeconds);
+	writePosR = (int)(delayInSeconds);
 	reset();
 }
 
@@ -39,17 +40,34 @@ void Vibrato::processBlock(AudioBuffer<float>& buffer, MidiBuffer & midiMessages
 	int numChannels = buffer.getNumChannels();
 	int numSamples = buffer.getNumSamples();
 
-	for(int c = 0; c < numChannels; ++c)
+	float d = delayInSeconds.load();
+	float s = lastSampleRate;
+
+	for (int c = 0; c < numChannels; ++c)
 	{
 		float* samples = buffer.getWritePointer(c);
 
-		for (int i = 0; i < numSamples; ++i)
+		if (c == 0)
 		{
-			ringBuffer[writePos + numSamples * c] = samples[i]; // unsafe if lots of channels
-			samples[i] += ringBuffer[readPos + numSamples * c]; // unsafe if lots of channels
-
-			writePos = (writePos + 1) & WRAP_MASK;
-			readPos = (readPos + 1) & WRAP_MASK;
+			for (int i = 0; i < numSamples; ++i)
+			{
+				ringBufferL[writePosL] = samples[i];
+				samples[i] += ringBufferL[readPosL];
+				readPosL = int(writePosL - d) & (WRAP_MASK);
+				jassert(readPosL >= 0);
+				writePosL = (writePosL + 1) & WRAP_MASK;
+			}
+		}
+		if (c == 1)
+		{
+			for (int i = 0; i < numSamples; ++i)
+			{
+				ringBufferR[writePosR] = samples[i]; 
+				samples[i] += ringBufferR[readPosR];
+				readPosR = int(writePosR  - d) & (WRAP_MASK);
+				jassert(readPosR >= 0);
+				writePosR = (writePosR + 1) & WRAP_MASK;
+			}
 		}
 	}
 
@@ -111,10 +129,21 @@ void Vibrato::setStateInformation(const void * data, int sizeInBytes)
 {
 }
 
+void Vibrato::setFactor(float val)
+{
+	delayInSeconds.store((50 + val) / 50.0f * lastSampleRate);
+}
+
 void Vibrato::reset()
 {
 	for(int i = 0; i < WRAP_MASK; ++i)
 	{
-		ringBuffer[i] = 0;
+		ringBufferL[i] = 0;
+		ringBufferR[i] = 0;
 	}
+}
+
+int Vibrato::getWritePos()
+{
+	return 0;
 }

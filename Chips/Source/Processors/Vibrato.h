@@ -35,10 +35,22 @@ public:
 	virtual void getStateInformation(juce::MemoryBlock & destData) override;
 	virtual void setStateInformation(const void * data, int sizeInBytes) override;
 
+	void setFactor(float);
+
 private:
 	void reset();
 
-	static const int WRAP_MASK = 0x0FFFFFFF;
-	float ringBuffer[WRAP_MASK];
-	int readPos = 0, writePos = 0;
+	int getWritePos();
+
+	static const int WRAP_MASK = 0x00FFFFFF;
+	float ringBufferL[WRAP_MASK];
+	float ringBufferR[WRAP_MASK];
+	int readPosL = 0, writePosL = 0;
+	int readPosR = 0, writePosR = 0;
+
+	double lastSampleRate = 48000.0;
+	int countL = 1;
+	int countR = 1;
+	bool asc = true;
+	std::atomic<float> delayInSeconds = 0.5f;
 };

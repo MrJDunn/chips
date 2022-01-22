@@ -347,6 +347,7 @@ void ChipsAudioProcessor::setPitch(int value)
 void ChipsAudioProcessor::setVibrato(int value)
 {	
 	//TODO set vibrato value
+	vibrato.setFactor(value);
 	state.setProperty(vibratoIdentifier, value, nullptr);
 }
 
