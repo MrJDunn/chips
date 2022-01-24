@@ -46,7 +46,7 @@ void Vibrato::processBlock(AudioBuffer<float>& buffer, MidiBuffer & midiMessages
 	float* samplesR = buffer.getWritePointer(1);
 
 	float dc = delayInSeconds;
-	float d = (dc * lastSampleRate) / 100.f;
+	float d = (dc * lastSampleRate) / 1000.f;
 
 	for (int i = 0; i < numSamples; ++i)
 	{
@@ -62,7 +62,7 @@ void Vibrato::processBlock(AudioBuffer<float>& buffer, MidiBuffer & midiMessages
 		jassert(readPosR >= 0);
 		writePosR = (writePosR + 1) & WRAP_MASK;
 
-		count += (dc / lastSampleRate) * 100.f;
+		count += (dc / lastSampleRate) * 10.f;
 	}
 }
 
@@ -125,7 +125,7 @@ void Vibrato::setStateInformation(const void * data, int sizeInBytes)
 void Vibrato::setFactor(float val)
 {
 	delayInSeconds.store((50 + val) / 50.0f);
-	prepareToPlay(lastSampleRate, 0);
+//	prepareToPlay(lastSampleRate, 0);
 }
 
 void Vibrato::reset()
