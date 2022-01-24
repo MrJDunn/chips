@@ -53,4 +53,6 @@ private:
 	int countR = 1;
 	bool asc = true;
 	std::atomic<float> delayInSeconds = 0.5f;
+
+	float count = 0;
 };

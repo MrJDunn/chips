@@ -26,8 +26,10 @@ const String Vibrato::getName() const
 void Vibrato::prepareToPlay(double sampleRate, int maximumExpectedSamplesPerBlock)
 {
 	lastSampleRate = sampleRate;
-	writePosL = (int)(delayInSeconds);
-	writePosR = (int)(delayInSeconds);
+	writePosL = (int)(delayInSeconds * lastSampleRate);
+	writePosR = (int)(delayInSeconds * lastSampleRate);
+	readPosL = 0;
+	readPosR = 0;
 	reset();
 }
 
@@ -40,37 +42,28 @@ void Vibrato::processBlock(AudioBuffer<float>& buffer, MidiBuffer & midiMessages
 	int numChannels = buffer.getNumChannels();
 	int numSamples = buffer.getNumSamples();
 
-	float d = delayInSeconds.load();
-	float s = lastSampleRate;
+	float* samplesL = buffer.getWritePointer(0);
+	float* samplesR = buffer.getWritePointer(1);
 
-	for (int c = 0; c < numChannels; ++c)
+	float dc = delayInSeconds;
+	float d = (dc * lastSampleRate) / 100.f;
+
+	for (int i = 0; i < numSamples; ++i)
 	{
-		float* samples = buffer.getWritePointer(c);
+		ringBufferL[writePosL] = samplesL[i];
+		samplesL[i] = ringBufferL[readPosL] * 0.5f;
+		readPosL = int(writePosL - int(d + std::sin(2 * MathConstants<float>().pi * count) * d)) & (WRAP_MASK);
+		jassert(readPosL >= 0);
+		writePosL = (writePosL + 1) & WRAP_MASK;
 
-		if (c == 0)
-		{
-			for (int i = 0; i < numSamples; ++i)
-			{
-				ringBufferL[writePosL] = samples[i];
-				samples[i] += ringBufferL[readPosL];
-				readPosL = int(writePosL - d) & (WRAP_MASK);
-				jassert(readPosL >= 0);
-				writePosL = (writePosL + 1) & WRAP_MASK;
-			}
-		}
-		if (c == 1)
-		{
-			for (int i = 0; i < numSamples; ++i)
-			{
-				ringBufferR[writePosR] = samples[i]; 
-				samples[i] += ringBufferR[readPosR];
-				readPosR = int(writePosR  - d) & (WRAP_MASK);
-				jassert(readPosR >= 0);
-				writePosR = (writePosR + 1) & WRAP_MASK;
-			}
-		}
+		ringBufferR[writePosR] = samplesR[i];
+		samplesR[i] = ringBufferR[readPosR] * 0.5f;
+		readPosR = int(writePosR - int(d + std::sin(2 * MathConstants<float>().pi * count) * d)) & (WRAP_MASK);
+		jassert(readPosR >= 0);
+		writePosR = (writePosR + 1) & WRAP_MASK;
+
+		count += (dc / lastSampleRate) * 100.f;
 	}
-
 }
 
 double Vibrato::getTailLengthSeconds() const
@@ -131,7 +124,8 @@ void Vibrato::setStateInformation(const void * data, int sizeInBytes)
 
 void Vibrato::setFactor(float val)
 {
-	delayInSeconds.store((50 + val) / 50.0f * lastSampleRate);
+	delayInSeconds.store((50 + val) / 50.0f);
+	prepareToPlay(lastSampleRate, 0);
 }
 
 void Vibrato::reset()
