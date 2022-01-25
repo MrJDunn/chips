@@ -26,10 +26,8 @@ const String Vibrato::getName() const
 void Vibrato::prepareToPlay(double sampleRate, int maximumExpectedSamplesPerBlock)
 {
 	lastSampleRate = sampleRate;
-	writePosL = (int)(delayInSeconds * lastSampleRate);
-	writePosR = (int)(delayInSeconds * lastSampleRate);
-	readPosL = 0;
-	readPosR = 0;
+	writePos = (int)(delayInSeconds * lastSampleRate);
+	readPos = 0;
 	reset();
 }
 
@@ -37,9 +35,6 @@ void Vibrato::releaseResources()
 {
 }
 
-	int lastVal1 = 0, lastVal2 = 0;
-	float lastCount = 0.f;
-	int linkL = 0, linkR = 0;
 void Vibrato::processBlock(AudioBuffer<float>& buffer, MidiBuffer & midiMessages)
 {
 	int numChannels = buffer.getNumChannels();
@@ -53,38 +48,24 @@ void Vibrato::processBlock(AudioBuffer<float>& buffer, MidiBuffer & midiMessages
 
 	for (int i = 0; i < numSamples; ++i)
 	{
-		jassert(writePosL >= 0 && writePosL <= WRAP_MASK);
-		ringBufferL[writePosL] = samplesL[i];
-		jassert(readPosL >= 0 && readPosL <= WRAP_MASK);
-		samplesL[i] = ringBufferL[readPosL] * 0.5f;
+		jassert(writePos >= 0 && writePos <= WRAP_MASK);
+		ringBufferL[writePos] = samplesL[i];
+		ringBufferR[writePos] = samplesR[i];
+		jassert(readPos >= 0 && readPos <= WRAP_MASK);
+		samplesL[i] = ringBufferL[readPos] * 0.5f;
+		samplesR[i] = ringBufferR[readPos] * 0.5f;
 
-		if(writePosL < readPosL)
+		if(writePos < readPos)
 		{
 			// For wrapping buffer, need to use another counter so readPos doesn't get less than 0
-			readPosL = int(linkL++ - int(d + std::sin(2 * MathConstants<float>().pi * count) * d)) % (WRAP_MASK);
+			readPos = int(link++ - int(d + std::sin(2 * MathConstants<float>().pi * count) * d)) % (WRAP_MASK);
 		}
 		else
 		{
-			linkL = writePosL;
-			readPosL = int(writePosL - int(d + std::sin(2 * MathConstants<float>().pi * count) * d)) % (WRAP_MASK);
+			link = writePos;
+			readPos = int(writePos - int(d + std::sin(2 * MathConstants<float>().pi * count) * d)) % (WRAP_MASK);
 		}
-		writePosL = (writePosL + 1) % WRAP_MASK;
-
-		jassert(writePosR >= 0 && writePosR <= WRAP_MASK);
-		ringBufferR[writePosR] = samplesR[i];
-		jassert(readPosR >= 0 && readPosR <= WRAP_MASK);
-		samplesR[i] = ringBufferR[readPosR] * 0.5f;
-
-		if(writePosR < readPosR)
-		{
-			readPosR = int(linkR++ - int(d + std::sin(2 * MathConstants<float>().pi * count) * d)) % (WRAP_MASK);
-		}
-		else
-		{
-			linkR = writePosR;
-			readPosR = int(writePosR - int(d + std::sin(2 * MathConstants<float>().pi * count) * d)) % (WRAP_MASK);
-		}
-		writePosR = (writePosR + 1) % WRAP_MASK;
+		writePos = (writePos + 1) % WRAP_MASK;
 
 		count += (dc / lastSampleRate) * 10.f;
 	}

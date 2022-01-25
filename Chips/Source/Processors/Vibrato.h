@@ -45,14 +45,12 @@ private:
 	static const int WRAP_MASK = 0x0000FFFF;
 	float ringBufferL[WRAP_MASK];
 	float ringBufferR[WRAP_MASK];
-	int readPosL = 0, writePosL = 0;
-	int readPosR = 0, writePosR = 0;
+	int readPos = 0, writePos = 0;
 
 	double lastSampleRate = 48000.0;
-	int countL = 1;
-	int countR = 1;
 	bool asc = true;
 	std::atomic<float> delayInSeconds = 0.5f;
 
+	int link = 0;
 	float count = 0;
 };
