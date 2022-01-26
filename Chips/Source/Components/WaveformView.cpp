@@ -49,13 +49,11 @@ void WaveformView::paintVerticalLines(Graphics & g)
 	g.drawRect(getLocalBounds());
 	float thisSample = 0.0f;
 	float lastSample = 0.0f;
-	for (int i = 0; i < bufferLength; ++i)
+	for (int i = 0; i < 2 * bufferLength; ++i)
 	{
 		if (i % 2 == 0)
 		{
-			jassert(i < buffer.size());
-
-			thisSample = buffer.at(i) * amplitude + height / 2.0f;
+			thisSample = buffer.at(i / 2) * amplitude + height / 2.0f;
 			g.drawLine({(float)i / divisor, (float)height / 2.0f, (float)(i + 1.0f) / divisor, thisSample });
 			lastSample = thisSample;
 		}
