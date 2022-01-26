@@ -58,12 +58,12 @@ void Vibrato::processBlock(AudioBuffer<float>& buffer, MidiBuffer & midiMessages
 		if(writePos < readPos)
 		{
 			// For wrapping buffer, need to use another counter so readPos doesn't get less than 0
-			readPos = int(link++ - int(d + std::sin(2 * MathConstants<float>().pi * count) * d)) % (WRAP_MASK);
+			readPos = int(link++ - int(d + std::sin(2 * MathConstants<float>().pi * count) * d)) & (WRAP_MASK);
 		}
 		else
 		{
 			link = writePos;
-			readPos = int(writePos - int(d + std::sin(2 * MathConstants<float>().pi * count) * d)) % (WRAP_MASK);
+			readPos = int(writePos - int(d + std::sin(2 * MathConstants<float>().pi * count) * d)) & (WRAP_MASK);
 		}
 		writePos = (writePos + 1) % WRAP_MASK;
 

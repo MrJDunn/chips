@@ -140,7 +140,7 @@ private:
 		DSC
 	} pitchModMode = PitchModMode::OFF;
 
-	std::unique_ptr<WaveBase> wave;
+	std::unique_ptr<WaveBase> wave = std::make_unique<Square>();
 	ValueTree state;
 
 	Identifier waveIdentifier;
