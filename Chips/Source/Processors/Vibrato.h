@@ -42,7 +42,7 @@ private:
 
 	int getWritePos();
 
-	static const int WRAP_MASK = 0x0000FFFF;
+	static const int WRAP_MASK = 0x000FFFFF;
 	float ringBufferL[WRAP_MASK];
 	float ringBufferR[WRAP_MASK];
 	int readPos = 0, writePos = 0;

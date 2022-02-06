@@ -220,7 +220,7 @@ void ChipsAudioProcessorEditor::resized()
 
 	/* Preset selection */
 
-	cPreset.setBounds(area.removeFromTop(SizeValues::SLIDER_HEIGHT));
+	cPreset.setBounds(area.removeFromTop(SizeValues::SLIDER_HEIGHT * 1.75f).reduced(10));
 
 	/* Sections */
 
@@ -265,8 +265,7 @@ void ChipsAudioProcessorEditor::resized()
 	lRelease.setBounds(releaseArea);
 
 	/* Waveform display */
-
-	cWaveform.setBounds(rightColumn.reduced(10));
+	cWaveform.setBounds(rightColumn.removeFromTop(rightColumn.getHeight() - 1.0f).reduced(10));
 
 	waveView.setBounds(area.reduced(10));
 }

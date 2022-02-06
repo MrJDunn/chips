@@ -36,7 +36,7 @@ ChipsAudioProcessor::ChipsAudioProcessor():
 	state.setProperty(releaseIdentifier, 50.0f, nullptr);
 	state.setProperty(pulseWidthIdentifier, 0.0f, nullptr);
 	state.setProperty(pitchIdentifier, 1.0f, nullptr);
-	state.setProperty(vibratoIdentifier, 50.0f, nullptr);
+	state.setProperty(vibratoIdentifier, -50.0f, nullptr);
 }
 
 ChipsAudioProcessor::~ChipsAudioProcessor()
@@ -227,32 +227,17 @@ void ChipsAudioProcessor::setStateInformation (const void* data, int sizeInBytes
 		{
 			ValueTree state = juce::ValueTree::fromXml(*xmlState);
 
-			if(state.hasProperty("wave"))
-				setWaveform(state.getProperty("wave"));
+			// Set a default value if property not present
 
-			if (state.hasProperty("amplitude"))
-				setAmplitude(state.getProperty("amplitude"));
-
-			if (state.hasProperty("attack"))
-				setAttack(state.getProperty("attack"));
-
-			if (state.hasProperty("decay"))
-				setDecay(state.getProperty("decay"));
-
-			if (state.hasProperty("sustain"))
-				setSustain(state.getProperty("sustain"));
-	
-			if (state.hasProperty("release"))
-				setRelease(state.getProperty("release"));
-
-			if (state.hasProperty("pulseWidth"))
-				setPulseWidth(state.getProperty("pulseWidth"));
-
-			if (state.hasProperty("pitch"))
-				setPitch(state.getProperty("pitch"));
-	
-			if (state.hasProperty("vibrato"))
-				setVibrato(state.getProperty("vibrato"));
+			setWaveform(state.hasProperty("wave") ? state.getProperty("wave") : 1.0f);
+			setAmplitude(state.hasProperty("amplitude") ? state.getProperty("amplitude") : 50.0f);
+			setAttack(state.hasProperty("attack") ? state.getProperty("attack") : 50.0f);
+			setDecay(state.hasProperty("decay") ? state.getProperty("decay") : 50.0f);
+			setSustain(state.hasProperty("sustain") ? state.getProperty("sustain") : 50.0f);
+			setRelease(state.hasProperty("release") ? state.getProperty("release") : 50.0f);
+			setPulseWidth(state.hasProperty("pulseWidth") ? state.getProperty("pulseWidth") : 0.0f);
+			setPitch(state.hasProperty("pitch") ? state.getProperty("pitch") : 1.0f);
+			setVibrato(state.hasProperty("vibrato") ? state.getProperty("vibrato") : -50.0f);
 
 		}
 	}

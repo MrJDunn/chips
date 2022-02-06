@@ -134,7 +134,6 @@ public:
 		setColour(PopupMenu::ColourIds::highlightedBackgroundColourId, colours.getHighlight());
 		setColour(PopupMenu::ColourIds::highlightedTextColourId, colours.getTextInverse());
 		setColour(PopupMenu::ColourIds::textColourId, colours.getText());
-
 	}
 
 	void drawLinearSlider(Graphics& g, int x, int y, int width, int height,
@@ -252,4 +251,5 @@ public:
 			}
 		}
 	}
+
 };
